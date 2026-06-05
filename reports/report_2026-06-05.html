@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Stock Advisor — 2026-06-05</title>
+  <style>
+    :root {
+      --bg: #0d1117; --bg2: #161b22; --bg3: #21262d;
+      --border: #30363d; --text: #e6edf3; --muted: #8b949e;
+      --green: #3fb950; --red: #f85149; --yellow: #d29922;
+      --blue: #58a6ff; --purple: #bc8cff; --orange: #ffa657;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-size: 14px; line-height: 1.5; }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Header */
+    .site-header { background: var(--bg2); border-bottom: 1px solid var(--border);
+                    padding: 16px 24px; display: flex; align-items: center;
+                    justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .site-header h1 { font-size: 20px; font-weight: 700; }
+    .site-header .date { color: var(--muted); font-size: 13px; }
+    .breadth-pill { padding: 4px 12px; border-radius: 20px; font-size: 13px;
+                     font-weight: 600; background: var(--bg3); border: 1px solid var(--border); }
+
+    /* Stat bar */
+    .stat-bar { display: flex; gap: 16px; flex-wrap: wrap;
+                 padding: 16px 24px; background: var(--bg2);
+                 border-bottom: 1px solid var(--border); }
+    .stat { text-align: center; }
+    .stat .val { font-size: 24px; font-weight: 700; }
+    .stat .lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; }
+    .stat.green .val { color: var(--green); }
+    .stat.yellow .val { color: var(--yellow); }
+    .stat.red .val { color: var(--red); }
+    .stat.blue .val { color: var(--blue); }
+
+    /* Alerts */
+    .alerts { padding: 0 24px; margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+    .alert { padding: 10px 16px; border-radius: 6px; font-weight: 600; font-size: 13px; }
+    .alert-golden { background: rgba(210,153,34,0.15); border: 1px solid var(--yellow); color: var(--yellow); }
+    .alert-death  { background: rgba(248,81,73,0.12);  border: 1px solid var(--red);    color: var(--red); }
+
+    /* Main */
+    main { max-width: 1400px; margin: 0 auto; padding: 24px; }
+    section { margin-bottom: 40px; }
+    section h2 { font-size: 17px; font-weight: 700; margin-bottom: 14px;
+                  padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    .count { color: var(--muted); font-weight: 400; font-size: 14px; }
+    .section-note { color: var(--muted); font-size: 13px; margin-bottom: 12px; margin-top: -8px; }
+
+    /* Cards */
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; }
+    .stock-card { background: var(--bg2); border: 1px solid var(--border);
+                   border-radius: 8px; padding: 14px; transition: border-color .15s; }
+    .stock-card:hover { border-color: var(--blue); }
+    .stock-card.strong-buy { border-left: 3px solid var(--green); }
+    .stock-card.watch       { border-left: 3px solid var(--yellow); }
+    .stock-card.hold        { border-left: 3px solid var(--muted); }
+    .stock-card.avoid       { border-left: 3px solid var(--red); }
+
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+    .ticker { font-size: 18px; font-weight: 800; color: var(--blue); margin-right: 8px; }
+    .score-bar { font-family: monospace; font-size: 11px; color: var(--muted); }
+    .price { font-size: 16px; font-weight: 700; }
+    .rsi { font-size: 12px; padding: 2px 7px; border-radius: 10px; margin-left: 6px; }
+    .rsi-low  { background: rgba(63,185,80,.2);  color: var(--green); }
+    .rsi-mid  { background: rgba(88,166,255,.15); color: var(--blue); }
+    .rsi-high { background: rgba(248,81,73,.2);  color: var(--red); }
+
+    .meta-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
+    .name { color: var(--muted); font-size: 12px; }
+    .sector { color: var(--purple); font-size: 11px; }
+    .ma-row { font-size: 12px; color: var(--muted); margin: 6px 0; }
+
+    .badge-row { display: flex; flex-wrap: wrap; gap: 4px; margin: 6px 0; }
+    .badge { font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+    .badge.golden  { background: rgba(210,153,34,.2); color: var(--yellow); }
+    .badge.death   { background: rgba(248,81,73,.15); color: var(--red); }
+    .badge.div     { background: rgba(63,185,80,.15); color: var(--green); }
+    .badge.blackout { background: rgba(255,166,87,.15); color: var(--orange); }
+
+    .position-box { background: rgba(63,185,80,.1); border: 1px solid rgba(63,185,80,.3);
+                     border-radius: 6px; padding: 7px 10px; margin: 8px 0; font-size: 12px; }
+
+    .signals { list-style: none; margin-top: 8px; }
+    .signals li { font-size: 12px; color: var(--muted); padding: 2px 0; }
+    .signals li:before { margin-right: 4px; }
+
+    /* Position table */
+    .table-wrap { overflow-x: auto; }
+    .pos-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .pos-table th { background: var(--bg3); color: var(--muted); text-align: left;
+                     padding: 8px 12px; font-weight: 600; border-bottom: 1px solid var(--border); }
+    .pos-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+    .pos-table tr:hover td { background: var(--bg3); }
+
+    /* Footer */
+    footer { text-align: center; color: var(--muted); font-size: 12px;
+              padding: 24px; border-top: 1px solid var(--border); margin-top: 40px; }
+
+    /* Mobile */
+    @media (max-width: 600px) {
+      .card-grid { grid-template-columns: 1fr; }
+      .stat-bar { gap: 12px; }
+      .stat .val { font-size: 20px; }
+      main { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div>
+    <h1>📈 Daily Stock Advisor</h1>
+    <div class="date">2026-06-05 &nbsp;·&nbsp; 387 stocks scanned</div>
+  </div>
+  <div class="breadth-pill">🟡 Neutral &nbsp;·&nbsp; 49% above MA200</div>
+</header>
+
+<div class="stat-bar">
+  <div class="stat green"><div class="val">2</div><div class="lbl">Strong Buy</div></div>
+  <div class="stat yellow"><div class="val">62</div><div class="lbl">Watch</div></div>
+  <div class="stat red"><div class="val">199</div><div class="lbl">Avoid</div></div>
+  <div class="stat blue"><div class="val">49%</div><div class="lbl">Above MA200</div></div>
+  <div class="stat green"><div class="val">318</div><div class="lbl">Golden Cross</div></div>
+  <div class="stat red"><div class="val">318</div><div class="lbl">Death Cross</div></div>
+  <div class="stat blue"><div class="val">$7,147</div><div class="lbl">Suggested Deploy</div></div>
+</div>
+
+<div class='alerts'><div class="alert alert-golden">🌟 GOLDEN CROSS TODAY: NVDA &nbsp;|&nbsp; AAPL &nbsp;|&nbsp; GOOGL &nbsp;|&nbsp; GOOG &nbsp;|&nbsp; MSFT &nbsp;|&nbsp; AMZN &nbsp;|&nbsp; AVGO &nbsp;|&nbsp; TSLA &nbsp;|&nbsp; META &nbsp;|&nbsp; MU &nbsp;|&nbsp; WMT &nbsp;|&nbsp; AMD &nbsp;|&nbsp; JPM &nbsp;|&nbsp; ORCL &nbsp;|&nbsp; XOM &nbsp;|&nbsp; V &nbsp;|&nbsp; INTC &nbsp;|&nbsp; JNJ &nbsp;|&nbsp; CSCO &nbsp;|&nbsp; LRCX &nbsp;|&nbsp; CAT &nbsp;|&nbsp; COST &nbsp;|&nbsp; MA &nbsp;|&nbsp; AMAT &nbsp;|&nbsp; ABBV &nbsp;|&nbsp; CVX &nbsp;|&nbsp; BAC &nbsp;|&nbsp; NFLX &nbsp;|&nbsp; UNH &nbsp;|&nbsp; KO &nbsp;|&nbsp; MS &nbsp;|&nbsp; GE &nbsp;|&nbsp; PG &nbsp;|&nbsp; HD &nbsp;|&nbsp; GS &nbsp;|&nbsp; IBM &nbsp;|&nbsp; TXN &nbsp;|&nbsp; PM &nbsp;|&nbsp; AZN &nbsp;|&nbsp; MRVL &nbsp;|&nbsp; QCOM &nbsp;|&nbsp; GEV &nbsp;|&nbsp; WFC &nbsp;|&nbsp; LIN &nbsp;|&nbsp; RTX &nbsp;|&nbsp; PANW &nbsp;|&nbsp; C &nbsp;|&nbsp; ANET &nbsp;|&nbsp; ADI &nbsp;|&nbsp; STX &nbsp;|&nbsp; AXP &nbsp;|&nbsp; WDC &nbsp;|&nbsp; TMUS &nbsp;|&nbsp; PEP &nbsp;|&nbsp; VZ &nbsp;|&nbsp; MCD &nbsp;|&nbsp; CRWD &nbsp;|&nbsp; AMGN &nbsp;|&nbsp; APH &nbsp;|&nbsp; NEE &nbsp;|&nbsp; TMO &nbsp;|&nbsp; TJX &nbsp;|&nbsp; GLW &nbsp;|&nbsp; DIS &nbsp;|&nbsp; BA &nbsp;|&nbsp; ETN &nbsp;|&nbsp; T &nbsp;|&nbsp; GILD &nbsp;|&nbsp; CRM &nbsp;|&nbsp; UNP &nbsp;|&nbsp; ABT &nbsp;|&nbsp; SCHW &nbsp;|&nbsp; UBER &nbsp;|&nbsp; COP &nbsp;|&nbsp; PFE &nbsp;|&nbsp; HON &nbsp;|&nbsp; WELL &nbsp;|&nbsp; BX &nbsp;|&nbsp; PLD &nbsp;|&nbsp; BKNG &nbsp;|&nbsp; DHR &nbsp;|&nbsp; NOW &nbsp;|&nbsp; PDD &nbsp;|&nbsp; MO &nbsp;|&nbsp; CVS &nbsp;|&nbsp; NEM &nbsp;|&nbsp; PGR &nbsp;|&nbsp; BMY &nbsp;|&nbsp; COF &nbsp;|&nbsp; SBUX &nbsp;|&nbsp; ACN &nbsp;|&nbsp; FTNT &nbsp;|&nbsp; ADBE &nbsp;|&nbsp; SO &nbsp;|&nbsp; FCX &nbsp;|&nbsp; MDT &nbsp;|&nbsp; HWM &nbsp;|&nbsp; CEG &nbsp;|&nbsp; DUK &nbsp;|&nbsp; UPS &nbsp;|&nbsp; CME &nbsp;|&nbsp; ADP &nbsp;|&nbsp; JCI &nbsp;|&nbsp; DDOG &nbsp;|&nbsp; PNC &nbsp;|&nbsp; WMB &nbsp;|&nbsp; MNST &nbsp;|&nbsp; CSX &nbsp;|&nbsp; SLB &nbsp;|&nbsp; AMT &nbsp;|&nbsp; CMCSA &nbsp;|&nbsp; USB &nbsp;|&nbsp; NXPI &nbsp;|&nbsp; ABNB &nbsp;|&nbsp; MMM &nbsp;|&nbsp; EMR &nbsp;|&nbsp; MDLZ &nbsp;|&nbsp; ICE &nbsp;|&nbsp; MPC &nbsp;|&nbsp; VLO &nbsp;|&nbsp; RCL &nbsp;|&nbsp; EOG &nbsp;|&nbsp; ROST &nbsp;|&nbsp; PSX &nbsp;|&nbsp; GM &nbsp;|&nbsp; HPE &nbsp;|&nbsp; ORLY &nbsp;|&nbsp; APO &nbsp;|&nbsp; BSX &nbsp;|&nbsp; KMI &nbsp;|&nbsp; AEP &nbsp;|&nbsp; CL &nbsp;|&nbsp; WBD &nbsp;|&nbsp; NKE &nbsp;|&nbsp; TER &nbsp;|&nbsp; BKR &nbsp;|&nbsp; F &nbsp;|&nbsp; PCAR &nbsp;|&nbsp; OXY &nbsp;|&nbsp; FANG &nbsp;|&nbsp; TFC &nbsp;|&nbsp; SRE &nbsp;|&nbsp; AFL &nbsp;|&nbsp; D &nbsp;|&nbsp; TGT &nbsp;|&nbsp; CARR &nbsp;|&nbsp; O &nbsp;|&nbsp; OKE &nbsp;|&nbsp; DVN &nbsp;|&nbsp; FAST &nbsp;|&nbsp; MCHP &nbsp;|&nbsp; MET &nbsp;|&nbsp; ON &nbsp;|&nbsp; CTVA &nbsp;|&nbsp; VST &nbsp;|&nbsp; DAL &nbsp;|&nbsp; ETR &nbsp;|&nbsp; EW &nbsp;|&nbsp; NDAQ &nbsp;|&nbsp; ODFL &nbsp;|&nbsp; EBAY &nbsp;|&nbsp; XEL &nbsp;|&nbsp; EXC &nbsp;|&nbsp; CAH &nbsp;|&nbsp; FITB &nbsp;|&nbsp; STT &nbsp;|&nbsp; KDP &nbsp;|&nbsp; DHI &nbsp;|&nbsp; ADM &nbsp;|&nbsp; CCI &nbsp;|&nbsp; PEG &nbsp;|&nbsp; AIG &nbsp;|&nbsp; VTR &nbsp;|&nbsp; LYV &nbsp;|&nbsp; ED &nbsp;|&nbsp; KR &nbsp;|&nbsp; CCL &nbsp;|&nbsp; PYPL &nbsp;|&nbsp; PCG &nbsp;|&nbsp; CMG &nbsp;|&nbsp; WDAY &nbsp;|&nbsp; SYY &nbsp;|&nbsp; WEC &nbsp;|&nbsp; NTAP &nbsp;|&nbsp; PAYX &nbsp;|&nbsp; HAL &nbsp;|&nbsp; FSLR &nbsp;|&nbsp; EQT &nbsp;|&nbsp; UAL &nbsp;|&nbsp; ZTS &nbsp;|&nbsp; HBAN &nbsp;|&nbsp; KVUE &nbsp;|&nbsp; KMB &nbsp;|&nbsp; ACGL &nbsp;|&nbsp; EL &nbsp;|&nbsp; CNC &nbsp;|&nbsp; VICI &nbsp;|&nbsp; NVT &nbsp;|&nbsp; SMCI &nbsp;|&nbsp; GEHC &nbsp;|&nbsp; NRG &nbsp;|&nbsp; TPR &nbsp;|&nbsp; CPRT &nbsp;|&nbsp; DXCM &nbsp;|&nbsp; IR &nbsp;|&nbsp; EIX &nbsp;|&nbsp; FOXA &nbsp;|&nbsp; KHC &nbsp;|&nbsp; OTIS &nbsp;|&nbsp; FE &nbsp;|&nbsp; PPL &nbsp;|&nbsp; CFG &nbsp;|&nbsp; TEAM &nbsp;|&nbsp; ES &nbsp;|&nbsp; DOW &nbsp;|&nbsp; CTSH &nbsp;|&nbsp; EQR &nbsp;|&nbsp; PPG &nbsp;|&nbsp; WRB &nbsp;|&nbsp; HPQ &nbsp;|&nbsp; RF &nbsp;|&nbsp; AKAM &nbsp;|&nbsp; STZ &nbsp;|&nbsp; DG &nbsp;|&nbsp; SYF &nbsp;|&nbsp; KEY &nbsp;|&nbsp; PHM &nbsp;|&nbsp; CHD &nbsp;|&nbsp; LEN &nbsp;|&nbsp; ROL &nbsp;|&nbsp; NI &nbsp;|&nbsp; CMS &nbsp;|&nbsp; LYB &nbsp;|&nbsp; DLTR &nbsp;|&nbsp; FIS &nbsp;|&nbsp; OMC &nbsp;|&nbsp; TSN &nbsp;|&nbsp; LUV &nbsp;|&nbsp; ALB &nbsp;|&nbsp; MRNA &nbsp;|&nbsp; DD &nbsp;|&nbsp; BRO &nbsp;|&nbsp; EVRG &nbsp;|&nbsp; AMKR &nbsp;|&nbsp; FTV &nbsp;|&nbsp; LNT &nbsp;|&nbsp; CF &nbsp;|&nbsp; IP &nbsp;|&nbsp; WY &nbsp;|&nbsp; AMCR &nbsp;|&nbsp; GIS &nbsp;|&nbsp; INVH &nbsp;|&nbsp; APTV &nbsp;|&nbsp; HST &nbsp;|&nbsp; GEN &nbsp;|&nbsp; KIM &nbsp;|&nbsp; CHTR &nbsp;|&nbsp; BEN &nbsp;|&nbsp; BWA &nbsp;|&nbsp; TSCO &nbsp;|&nbsp; BBY &nbsp;|&nbsp; NWSA &nbsp;|&nbsp; BALL &nbsp;|&nbsp; MAS &nbsp;|&nbsp; CSGP &nbsp;|&nbsp; APA &nbsp;|&nbsp; DOC &nbsp;|&nbsp; HRL &nbsp;|&nbsp; KNX &nbsp;|&nbsp; MGM &nbsp;|&nbsp; MKC &nbsp;|&nbsp; UDR &nbsp;|&nbsp; SWKS &nbsp;|&nbsp; IVZ &nbsp;|&nbsp; COO &nbsp;|&nbsp; BJ &nbsp;|&nbsp; KTOS &nbsp;|&nbsp; CLX &nbsp;|&nbsp; AES &nbsp;|&nbsp; GME &nbsp;|&nbsp; TTD &nbsp;|&nbsp; BAX &nbsp;|&nbsp; RRC &nbsp;|&nbsp; ENPH &nbsp;|&nbsp; AAL &nbsp;|&nbsp; COLB &nbsp;|&nbsp; SM &nbsp;|&nbsp; BLDR &nbsp;|&nbsp; MTCH &nbsp;|&nbsp; TECH &nbsp;|&nbsp; ACI &nbsp;|&nbsp; NOV &nbsp;|&nbsp; MOS &nbsp;|&nbsp; SFM &nbsp;|&nbsp; TAP &nbsp;|&nbsp; TTEK &nbsp;|&nbsp; FLR &nbsp;|&nbsp; HR &nbsp;|&nbsp; KMX &nbsp;|&nbsp; LKQ &nbsp;|&nbsp; ETSY &nbsp;|&nbsp; VFC &nbsp;|&nbsp; CPB &nbsp;|&nbsp; CE &nbsp;|&nbsp; CAG &nbsp;|&nbsp; CZR &nbsp;|&nbsp; MUR &nbsp;|&nbsp; LBRT &nbsp;|&nbsp; PBF &nbsp;|&nbsp; CNX &nbsp;|&nbsp; VVV &nbsp;|&nbsp; MDU &nbsp;|&nbsp; CRK &nbsp;|&nbsp; APLE &nbsp;|&nbsp; CC &nbsp;|&nbsp; OLN &nbsp;|&nbsp; PK &nbsp;|&nbsp; ACHC</div><div class="alert alert-death">💀 DEATH CROSS TODAY: NVDA &nbsp;|&nbsp; AAPL &nbsp;|&nbsp; GOOGL &nbsp;|&nbsp; GOOG &nbsp;|&nbsp; MSFT &nbsp;|&nbsp; AMZN &nbsp;|&nbsp; AVGO &nbsp;|&nbsp; TSLA &nbsp;|&nbsp; META &nbsp;|&nbsp; MU &nbsp;|&nbsp; WMT &nbsp;|&nbsp; AMD &nbsp;|&nbsp; JPM &nbsp;|&nbsp; ORCL &nbsp;|&nbsp; XOM &nbsp;|&nbsp; V &nbsp;|&nbsp; INTC &nbsp;|&nbsp; JNJ &nbsp;|&nbsp; CSCO &nbsp;|&nbsp; LRCX &nbsp;|&nbsp; CAT &nbsp;|&nbsp; COST &nbsp;|&nbsp; MA &nbsp;|&nbsp; AMAT &nbsp;|&nbsp; ABBV &nbsp;|&nbsp; CVX &nbsp;|&nbsp; BAC &nbsp;|&nbsp; NFLX &nbsp;|&nbsp; UNH &nbsp;|&nbsp; KO &nbsp;|&nbsp; MS &nbsp;|&nbsp; GE &nbsp;|&nbsp; PG &nbsp;|&nbsp; HD &nbsp;|&nbsp; GS &nbsp;|&nbsp; IBM &nbsp;|&nbsp; TXN &nbsp;|&nbsp; PM &nbsp;|&nbsp; AZN &nbsp;|&nbsp; MRVL &nbsp;|&nbsp; QCOM &nbsp;|&nbsp; GEV &nbsp;|&nbsp; WFC &nbsp;|&nbsp; LIN &nbsp;|&nbsp; RTX &nbsp;|&nbsp; PANW &nbsp;|&nbsp; C &nbsp;|&nbsp; ANET &nbsp;|&nbsp; ADI &nbsp;|&nbsp; STX &nbsp;|&nbsp; AXP &nbsp;|&nbsp; WDC &nbsp;|&nbsp; TMUS &nbsp;|&nbsp; PEP &nbsp;|&nbsp; VZ &nbsp;|&nbsp; MCD &nbsp;|&nbsp; CRWD &nbsp;|&nbsp; AMGN &nbsp;|&nbsp; APH &nbsp;|&nbsp; NEE &nbsp;|&nbsp; TMO &nbsp;|&nbsp; TJX &nbsp;|&nbsp; GLW &nbsp;|&nbsp; DIS &nbsp;|&nbsp; BA &nbsp;|&nbsp; ETN &nbsp;|&nbsp; T &nbsp;|&nbsp; GILD &nbsp;|&nbsp; CRM &nbsp;|&nbsp; UNP &nbsp;|&nbsp; ABT &nbsp;|&nbsp; SCHW &nbsp;|&nbsp; UBER &nbsp;|&nbsp; COP &nbsp;|&nbsp; PFE &nbsp;|&nbsp; HON &nbsp;|&nbsp; WELL &nbsp;|&nbsp; BX &nbsp;|&nbsp; PLD &nbsp;|&nbsp; BKNG &nbsp;|&nbsp; DHR &nbsp;|&nbsp; NOW &nbsp;|&nbsp; PDD &nbsp;|&nbsp; MO &nbsp;|&nbsp; CVS &nbsp;|&nbsp; NEM &nbsp;|&nbsp; PGR &nbsp;|&nbsp; BMY &nbsp;|&nbsp; COF &nbsp;|&nbsp; SBUX &nbsp;|&nbsp; ACN &nbsp;|&nbsp; FTNT &nbsp;|&nbsp; ADBE &nbsp;|&nbsp; SO &nbsp;|&nbsp; FCX &nbsp;|&nbsp; MDT &nbsp;|&nbsp; HWM &nbsp;|&nbsp; CEG &nbsp;|&nbsp; DUK &nbsp;|&nbsp; UPS &nbsp;|&nbsp; CME &nbsp;|&nbsp; ADP &nbsp;|&nbsp; JCI &nbsp;|&nbsp; DDOG &nbsp;|&nbsp; PNC &nbsp;|&nbsp; WMB &nbsp;|&nbsp; MNST &nbsp;|&nbsp; CSX &nbsp;|&nbsp; SLB &nbsp;|&nbsp; AMT &nbsp;|&nbsp; CMCSA &nbsp;|&nbsp; USB &nbsp;|&nbsp; NXPI &nbsp;|&nbsp; ABNB &nbsp;|&nbsp; MMM &nbsp;|&nbsp; EMR &nbsp;|&nbsp; MDLZ &nbsp;|&nbsp; ICE &nbsp;|&nbsp; MPC &nbsp;|&nbsp; VLO &nbsp;|&nbsp; RCL &nbsp;|&nbsp; EOG &nbsp;|&nbsp; ROST &nbsp;|&nbsp; PSX &nbsp;|&nbsp; GM &nbsp;|&nbsp; HPE &nbsp;|&nbsp; ORLY &nbsp;|&nbsp; APO &nbsp;|&nbsp; BSX &nbsp;|&nbsp; KMI &nbsp;|&nbsp; AEP &nbsp;|&nbsp; CL &nbsp;|&nbsp; WBD &nbsp;|&nbsp; NKE &nbsp;|&nbsp; TER &nbsp;|&nbsp; BKR &nbsp;|&nbsp; F &nbsp;|&nbsp; PCAR &nbsp;|&nbsp; OXY &nbsp;|&nbsp; FANG &nbsp;|&nbsp; TFC &nbsp;|&nbsp; SRE &nbsp;|&nbsp; AFL &nbsp;|&nbsp; D &nbsp;|&nbsp; TGT &nbsp;|&nbsp; CARR &nbsp;|&nbsp; O &nbsp;|&nbsp; OKE &nbsp;|&nbsp; DVN &nbsp;|&nbsp; FAST &nbsp;|&nbsp; MCHP &nbsp;|&nbsp; MET &nbsp;|&nbsp; ON &nbsp;|&nbsp; CTVA &nbsp;|&nbsp; VST &nbsp;|&nbsp; DAL &nbsp;|&nbsp; ETR &nbsp;|&nbsp; EW &nbsp;|&nbsp; NDAQ &nbsp;|&nbsp; ODFL &nbsp;|&nbsp; EBAY &nbsp;|&nbsp; XEL &nbsp;|&nbsp; EXC &nbsp;|&nbsp; CAH &nbsp;|&nbsp; FITB &nbsp;|&nbsp; STT &nbsp;|&nbsp; KDP &nbsp;|&nbsp; DHI &nbsp;|&nbsp; ADM &nbsp;|&nbsp; CCI &nbsp;|&nbsp; PEG &nbsp;|&nbsp; AIG &nbsp;|&nbsp; VTR &nbsp;|&nbsp; LYV &nbsp;|&nbsp; ED &nbsp;|&nbsp; KR &nbsp;|&nbsp; CCL &nbsp;|&nbsp; PYPL &nbsp;|&nbsp; PCG &nbsp;|&nbsp; CMG &nbsp;|&nbsp; WDAY &nbsp;|&nbsp; SYY &nbsp;|&nbsp; WEC &nbsp;|&nbsp; NTAP &nbsp;|&nbsp; PAYX &nbsp;|&nbsp; HAL &nbsp;|&nbsp; FSLR &nbsp;|&nbsp; EQT &nbsp;|&nbsp; UAL &nbsp;|&nbsp; ZTS &nbsp;|&nbsp; HBAN &nbsp;|&nbsp; KVUE &nbsp;|&nbsp; KMB &nbsp;|&nbsp; ACGL &nbsp;|&nbsp; EL &nbsp;|&nbsp; CNC &nbsp;|&nbsp; VICI &nbsp;|&nbsp; NVT &nbsp;|&nbsp; SMCI &nbsp;|&nbsp; GEHC &nbsp;|&nbsp; NRG &nbsp;|&nbsp; TPR &nbsp;|&nbsp; CPRT &nbsp;|&nbsp; DXCM &nbsp;|&nbsp; IR &nbsp;|&nbsp; EIX &nbsp;|&nbsp; FOXA &nbsp;|&nbsp; KHC &nbsp;|&nbsp; OTIS &nbsp;|&nbsp; FE &nbsp;|&nbsp; PPL &nbsp;|&nbsp; CFG &nbsp;|&nbsp; TEAM &nbsp;|&nbsp; ES &nbsp;|&nbsp; DOW &nbsp;|&nbsp; CTSH &nbsp;|&nbsp; EQR &nbsp;|&nbsp; PPG &nbsp;|&nbsp; WRB &nbsp;|&nbsp; HPQ &nbsp;|&nbsp; RF &nbsp;|&nbsp; AKAM &nbsp;|&nbsp; STZ &nbsp;|&nbsp; DG &nbsp;|&nbsp; SYF &nbsp;|&nbsp; KEY &nbsp;|&nbsp; PHM &nbsp;|&nbsp; CHD &nbsp;|&nbsp; LEN &nbsp;|&nbsp; ROL &nbsp;|&nbsp; NI &nbsp;|&nbsp; CMS &nbsp;|&nbsp; LYB &nbsp;|&nbsp; DLTR &nbsp;|&nbsp; FIS &nbsp;|&nbsp; OMC &nbsp;|&nbsp; TSN &nbsp;|&nbsp; LUV &nbsp;|&nbsp; ALB &nbsp;|&nbsp; MRNA &nbsp;|&nbsp; DD &nbsp;|&nbsp; BRO &nbsp;|&nbsp; EVRG &nbsp;|&nbsp; AMKR &nbsp;|&nbsp; FTV &nbsp;|&nbsp; LNT &nbsp;|&nbsp; CF &nbsp;|&nbsp; IP &nbsp;|&nbsp; WY &nbsp;|&nbsp; AMCR &nbsp;|&nbsp; GIS &nbsp;|&nbsp; INVH &nbsp;|&nbsp; APTV &nbsp;|&nbsp; HST &nbsp;|&nbsp; GEN &nbsp;|&nbsp; KIM &nbsp;|&nbsp; CHTR &nbsp;|&nbsp; BEN &nbsp;|&nbsp; BWA &nbsp;|&nbsp; TSCO &nbsp;|&nbsp; BBY &nbsp;|&nbsp; NWSA &nbsp;|&nbsp; BALL &nbsp;|&nbsp; MAS &nbsp;|&nbsp; CSGP &nbsp;|&nbsp; APA &nbsp;|&nbsp; DOC &nbsp;|&nbsp; HRL &nbsp;|&nbsp; KNX &nbsp;|&nbsp; MGM &nbsp;|&nbsp; MKC &nbsp;|&nbsp; UDR &nbsp;|&nbsp; SWKS &nbsp;|&nbsp; IVZ &nbsp;|&nbsp; COO &nbsp;|&nbsp; BJ &nbsp;|&nbsp; KTOS &nbsp;|&nbsp; CLX &nbsp;|&nbsp; AES &nbsp;|&nbsp; GME &nbsp;|&nbsp; TTD &nbsp;|&nbsp; BAX &nbsp;|&nbsp; RRC &nbsp;|&nbsp; ENPH &nbsp;|&nbsp; AAL &nbsp;|&nbsp; COLB &nbsp;|&nbsp; SM &nbsp;|&nbsp; BLDR &nbsp;|&nbsp; MTCH &nbsp;|&nbsp; TECH &nbsp;|&nbsp; ACI &nbsp;|&nbsp; NOV &nbsp;|&nbsp; MOS &nbsp;|&nbsp; SFM &nbsp;|&nbsp; TAP &nbsp;|&nbsp; TTEK &nbsp;|&nbsp; FLR &nbsp;|&nbsp; HR &nbsp;|&nbsp; KMX &nbsp;|&nbsp; LKQ &nbsp;|&nbsp; ETSY &nbsp;|&nbsp; VFC &nbsp;|&nbsp; CPB &nbsp;|&nbsp; CE &nbsp;|&nbsp; CAG &nbsp;|&nbsp; CZR &nbsp;|&nbsp; MUR &nbsp;|&nbsp; LBRT &nbsp;|&nbsp; PBF &nbsp;|&nbsp; CNX &nbsp;|&nbsp; VVV &nbsp;|&nbsp; MDU &nbsp;|&nbsp; CRK &nbsp;|&nbsp; APLE &nbsp;|&nbsp; CC &nbsp;|&nbsp; OLN &nbsp;|&nbsp; PK &nbsp;|&nbsp; ACHC</div></div>
+
+<main>
+  
+        <section>
+          <h2>💼 Suggested Positions <span class="count">($7,147 total)</span></h2>
+          <div class="table-wrap">
+          <table class="pos-table">
+            <thead><tr>
+              <th>Ticker</th><th>Score</th><th>Price</th>
+              <th>Shares</th><th>Amount</th><th>Alloc%</th><th>Div Yield</th><th>Sector</th>
+            </tr></thead>
+            <tbody>
+        <tr>
+          <td><strong>GOOGL</strong></td>
+          <td>68/100</td>
+          <td>$358.99</td>
+          <td>10</td>
+          <td>$3,590</td>
+          <td>5.0%</td>
+          <td>0.2%</td>
+          <td>SERVICES-COMPUTER PR</td>
+        </tr>
+        <tr>
+          <td><strong>GOOG</strong></td>
+          <td>68/100</td>
+          <td>$355.68</td>
+          <td>10</td>
+          <td>$3,557</td>
+          <td>5.0%</td>
+          <td>0.2%</td>
+          <td>SERVICES-COMPUTER PR</td>
+        </tr></tbody>
+          </table>
+          </div>
+        </section>
+  
+        <section>
+          <h2>🔥 Strong Buy — High-conviction entries <span class="count">(2)</span></h2>
+          <div class="card-grid">
+        <div class="stock-card strong-buy">
+          <div class="card-header">
+            <div class="ticker-block">
+              <span class="ticker">GOOGL</span>
+              <span class="score-bar" title="Score: 68/100">███████░░░ 68/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$358.99</span>
+              <span class="rsi rsi-low">RSI 14.2</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Alphabet Inc. Class A Common Stock</span>
+            <span class="sector">SERVICES-COMPUTER PROGRAM</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span></div>
+          <div class="ma-row">✅ Above MA50+200 &nbsp;|&nbsp; 1M: -7.6% &nbsp;|&nbsp; 3M: +19.3% &nbsp;|&nbsp; 6M: +12.1%</div>
+          
+            <div class="position-box">
+              <span>💼 Suggested: <strong>10 shares</strong> @ $358.99
+              = <strong>$3,590</strong> (5.0% of portfolio)</span>
+            </div>
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ Above MA50 — medium-term momentum positive</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI deeply oversold at 14.2 — high-probability mean-reversion entry</li></ul>
+        </div>
+        <div class="stock-card strong-buy">
+          <div class="card-header">
+            <div class="ticker-block">
+              <span class="ticker">GOOG</span>
+              <span class="score-bar" title="Score: 68/100">███████░░░ 68/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$355.68</span>
+              <span class="rsi rsi-low">RSI 11.9</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Alphabet Inc. Class C Capital Stock</span>
+            <span class="sector">SERVICES-COMPUTER PROGRAM</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span></div>
+          <div class="ma-row">✅ Above MA50+200 &nbsp;|&nbsp; 1M: -7.4% &nbsp;|&nbsp; 3M: +18.2% &nbsp;|&nbsp; 6M: +11.1%</div>
+          
+            <div class="position-box">
+              <span>💼 Suggested: <strong>10 shares</strong> @ $355.68
+              = <strong>$3,557</strong> (5.0% of portfolio)</span>
+            </div>
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ Above MA50 — medium-term momentum positive</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI deeply oversold at 11.9 — high-probability mean-reversion entry</li></ul>
+        </div></div>
+        </section>
+  
+        <section>
+          <h2>👀 Watch — Developing setups <span class="count">(62)</span></h2>
+          <div class="card-grid">
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <span class="ticker">HR</span>
+              <span class="score-bar" title="Score: 65/100">██████░░░░ 65/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$19.39</span>
+              <span class="rsi rsi-low">RSI 29.6</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Healthcare Realty Trust Incorporated</span>
+            <span class="sector">REAL ESTATE INVESTMENT TR</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 5.0%</span></div>
+          <div class="ma-row">✅ Above MA50+200 &nbsp;|&nbsp; 1M: -2.7% &nbsp;|&nbsp; 3M: +5.4% &nbsp;|&nbsp; 6M: +6.1%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ Above MA50 — medium-term momentum positive</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI deeply oversold at 29.6 — high-probability mean-reversion entry</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <span class="ticker">BEN</span>
+              <span class="score-bar" title="Score: 61/100">██████░░░░ 61/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$30.37</span>
+              <span class="rsi rsi-low">RSI 34.5</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Franklin Resources, Inc.</span>
+            <span class="sector">INVESTMENT ADVICE</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 4.3%</span></div>
+          <div class="ma-row">✅ Above MA50+200 &nbsp;|&nbsp; 1M: -0.3% &nbsp;|&nbsp; 3M: +12.8% &nbsp;|&nbsp; 6M: +34.4%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ Above MA50 — medium-term momentum positive</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI oversold at 34.5 — attractive entry territory</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <span class="ticker">CVS</span>
+              <span class="score-bar" title="Score: 60/100">██████░░░░ 60/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$91.37</span>
+              <span class="rsi rsi-low">RSI 27.9</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">CVS HEALTH CORPORATION</span>
+            <span class="sector">RETAIL-DRUG STORES AND PR</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 2.9%</span></div>
+          <div class="ma-row">✅ Above MA50+200 &nbsp;|&nbsp; 1M: +13.2% &nbsp;|&nbsp; 3M: +16.1% &nbsp;|&nbsp; 6M: +13.7%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ Above MA50 — medium-term momentum positive</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI deeply oversold at 27.9 — high-probability mean-reversion entry</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <span class="ticker">SBUX</span>
+              <span class="score-bar" title="Score: 60/100">██████░░░░ 60/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$95.89</span>
+              <span class="rsi rsi-low">RSI 14.5</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Starbucks Corp</span>
+            <span class="sector">RETAIL-EATING & DRINKING </span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 2.6%</span></div>
+          <div class="ma-row">~ Near MA50 &nbsp;|&nbsp; 1M: -8.6% &nbsp;|&nbsp; 3M: -2.8% &nbsp;|&nbsp; 6M: +10.1%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI deeply oversold at 14.5 — high-probability mean-reversion entry</li><li>✅ MACD histogram expanding — momentum building</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <span class="ticker">MDU</span>
+              <span class="score-bar" title="Score: 60/100">██████░░░░ 60/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$20.76</span>
+              <span class="rsi rsi-low">RSI 24.5</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">MDU Resources Group, Inc.</span>
+            <span class="sector">MINING & QUARRYING OF NON</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 2.7%</span></div>
+          <div class="ma-row">~ Near MA50 &nbsp;|&nbsp; 1M: -7.6% &nbsp;|&nbsp; 3M: -0.4% &nbsp;|&nbsp; 6M: +1.3%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI deeply oversold at 24.5 — high-probability mean-reversion entry</li><li>✅ MACD histogram expanding — momentum building</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <span class="ticker">DOC</span>
+              <span class="score-bar" title="Score: 57/100">██████░░░░ 57/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$19.07</span>
+              <span class="rsi rsi-mid">RSI 42.4</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Healthpeak Properties, Inc.</span>
+            <span class="sector">REAL ESTATE INVESTMENT TR</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 6.4%</span></div>
+          <div class="ma-row">✅ Above MA50+200 &nbsp;|&nbsp; 1M: +15.5% &nbsp;|&nbsp; 3M: +9.5% &nbsp;|&nbsp; 6M: +4.4%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ Above MA50 — medium-term momentum positive</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI at 42.4 — healthy, significant room to run</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <span class="ticker">VTR</span>
+              <span class="score-bar" title="Score: 54/100">█████░░░░░ 54/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$79.04</span>
+              <span class="rsi rsi-low">RSI 10.6</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Ventas, Inc.</span>
+            <span class="sector">REAL ESTATE INVESTMENT TR</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 2.6%</span></div>
+          <div class="ma-row">~ Near MA50 &nbsp;|&nbsp; 1M: -8.9% &nbsp;|&nbsp; 3M: -7.0% &nbsp;|&nbsp; 6M: -1.3%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI deeply oversold at 10.6 — high-probability mean-reversion entry</li><li>✅ Below lower Bollinger Band — extreme oversold, strong mean-reversion setup</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <span class="ticker">ROL</span>
+              <span class="score-bar" title="Score: 54/100">█████░░░░░ 54/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$45.79</span>
+              <span class="rsi rsi-low">RSI 22.9</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Rollins, Inc.</span>
+            <span class="sector">SERVICES-TO DWELLINGS & O</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 1.6%</span></div>
+          <div class="ma-row">📉 Below MA200 &nbsp;|&nbsp; 1M: -15.4% &nbsp;|&nbsp; 3M: -21.3% &nbsp;|&nbsp; 6M: -25.5%</div>
+          
+          <ul class="signals"><li>✅ RSI deeply oversold at 22.9 — high-probability mean-reversion entry</li><li>✅ MACD histogram expanding — momentum building</li><li>✅ Volume surge 1.54x 20-day average — likely institutional accumulation</li><li>✅ Below lower Bollinger Band — extreme oversold, strong mean-reversion setup</li><li>⚠️ Below MA200 — long-term downtrend, caution on new entries</li><li>⚠️ Sharp 1-month drop -15.4% — verify no fundamental deterioration</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <span class="ticker">WELL</span>
+              <span class="score-bar" title="Score: 53/100">█████░░░░░ 53/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$199.59</span>
+              <span class="rsi rsi-low">RSI 27.3</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Welltower Inc.</span>
+            <span class="sector">REAL ESTATE INVESTMENT TR</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span></div>
+          <div class="ma-row">~ Near MA50 &nbsp;|&nbsp; 1M: -6.9% &nbsp;|&nbsp; 3M: -2.7% &nbsp;|&nbsp; 6M: -2.4%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI deeply oversold at 27.3 — high-probability mean-reversion entry</li><li>✅ MACD histogram expanding — momentum building</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <span class="ticker">CME</span>
+              <span class="score-bar" title="Score: 53/100">█████░░░░░ 53/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$252.64</span>
+              <span class="rsi rsi-low">RSI 17.6</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">CME Group Inc.</span>
+            <span class="sector">SECURITY & COMMODITY BROK</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 2.1%</span></div>
+          <div class="ma-row">📉 Below MA200 &nbsp;|&nbsp; 1M: -11.9% &nbsp;|&nbsp; 3M: -20.3% &nbsp;|&nbsp; 6M: -7.5%</div>
+          
+          <ul class="signals"><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI deeply oversold at 17.6 — high-probability mean-reversion entry</li><li>✅ Volume surge 1.58x 20-day average — likely institutional accumulation</li><li>✅ Below lower Bollinger Band — extreme oversold, strong mean-reversion setup</li><li>⚠️ Below MA200 — long-term downtrend, caution on new entries</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <span class="ticker">PM</span>
+              <span class="score-bar" title="Score: 52/100">█████░░░░░ 52/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$175.94</span>
+              <span class="rsi rsi-low">RSI 31.5</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Philip Morris International Inc.</span>
+            <span class="sector">CIGARETTES</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 3.3%</span></div>
+          <div class="ma-row">✅ Above MA50+200 &nbsp;|&nbsp; 1M: +3.8% &nbsp;|&nbsp; 3M: +3.7% &nbsp;|&nbsp; 6M: +11.7%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ Above MA50 — medium-term momentum positive</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI oversold at 31.5 — attractive entry territory</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <span class="ticker">OLN</span>
+              <span class="score-bar" title="Score: 52/100">█████░░░░░ 52/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$25.76</span>
+              <span class="rsi rsi-low">RSI 28.0</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Olin Corp.</span>
+            <span class="sector">CHEMICALS & ALLIED PRODUC</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 3.1%</span></div>
+          <div class="ma-row">~ Near MA50 &nbsp;|&nbsp; 1M: -10.3% &nbsp;|&nbsp; 3M: +4.6% &nbsp;|&nbsp; 6M: +24.0%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI deeply oversold at 28.0 — high-probability mean-reversion entry</li><li>✅ MACD histogram expanding — momentum building</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <span class="ticker">AMZN</span>
+              <span class="score-bar" title="Score: 51/100">█████░░░░░ 51/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$250.02</span>
+              <span class="rsi rsi-low">RSI 32.4</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Amazon.Com Inc</span>
+            <span class="sector">RETAIL-CATALOG & MAIL-ORD</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span></div>
+          <div class="ma-row">✅ Above MA50+200 &nbsp;|&nbsp; 1M: -8.6% &nbsp;|&nbsp; 3M: +14.2% &nbsp;|&nbsp; 6M: +7.2%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ Above MA50 — medium-term momentum positive</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI oversold at 32.4 — attractive entry territory</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <span class="ticker">UNH</span>
+              <span class="score-bar" title="Score: 51/100">█████░░░░░ 51/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$377.00</span>
+              <span class="rsi rsi-low">RSI 26.1</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">UNITEDHEALTH GROUP INCORPORATED (Delawar</span>
+            <span class="sector">HOSPITAL & MEDICAL SERVIC</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 2.5%</span></div>
+          <div class="ma-row">✅ Above MA50+200 &nbsp;|&nbsp; 1M: +3.6% &nbsp;|&nbsp; 3M: +30.6% &nbsp;|&nbsp; 6M: +14.3%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ Above MA50 — medium-term momentum positive</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI deeply oversold at 26.1 — high-probability mean-reversion entry</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <span class="ticker">MO</span>
+              <span class="score-bar" title="Score: 51/100">█████░░░░░ 51/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$70.30</span>
+              <span class="rsi rsi-mid">RSI 44.2</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Altria Group, Inc.</span>
+            <span class="sector">CIGARETTES</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 6.0%</span></div>
+          <div class="ma-row">✅ Above MA50+200 &nbsp;|&nbsp; 1M: -3.4% &nbsp;|&nbsp; 3M: +5.0% &nbsp;|&nbsp; 6M: +19.1%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ Above MA50 — medium-term momentum positive</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI at 44.2 — healthy, significant room to run</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <span class="ticker">BX</span>
+              <span class="score-bar" title="Score: 50/100">█████░░░░░ 50/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$110.28</span>
+              <span class="rsi rsi-low">RSI 31.5</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Blackstone Inc.</span>
+            <span class="sector">INVESTMENT ADVICE</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 4.2%</span></div>
+          <div class="ma-row">📉 Below MA200 &nbsp;|&nbsp; 1M: -10.1% &nbsp;|&nbsp; 3M: -4.6% &nbsp;|&nbsp; 6M: -24.7%</div>
+          
+          <ul class="signals"><li>✅ RSI oversold at 31.5 — attractive entry territory</li><li>✅ Volume surge 1.66x 20-day average — likely institutional accumulation</li><li>✅ Below lower Bollinger Band — extreme oversold, strong mean-reversion setup</li><li>✅ Near 52-week low (9% of annual range) — deep value zone</li><li>⚠️ Below MA200 — long-term downtrend, caution on new entries</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <span class="ticker">GEV</span>
+              <span class="score-bar" title="Score: 49/100">█████░░░░░ 49/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$959.36</span>
+              <span class="rsi rsi-low">RSI 34.1</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">GE Vernova Inc.</span>
+            <span class="sector">ELECTRONIC & OTHER ELECTR</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span></div>
+          <div class="ma-row">~ Near MA50 &nbsp;|&nbsp; 1M: -12.4% &nbsp;|&nbsp; 3M: +17.7% &nbsp;|&nbsp; 6M: +60.0%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI oversold at 34.1 — attractive entry territory</li><li>✅ MACD histogram expanding — momentum building</li><li>⚠️ Sharp 1-month drop -12.4% — verify no fundamental deterioration</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <span class="ticker">AFL</span>
+              <span class="score-bar" title="Score: 49/100">█████░░░░░ 49/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$114.50</span>
+              <span class="rsi rsi-mid">RSI 46.3</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Aflac Inc.</span>
+            <span class="sector">ACCIDENT & HEALTH INSURAN</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 2.1%</span></div>
+          <div class="ma-row">✅ Above MA50+200 &nbsp;|&nbsp; 1M: 0.0% &nbsp;|&nbsp; 3M: +3.1% &nbsp;|&nbsp; 6M: +2.6%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ Above MA50 — medium-term momentum positive</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ MACD histogram expanding — momentum building</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <span class="ticker">CTVA</span>
+              <span class="score-bar" title="Score: 49/100">█████░░░░░ 49/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$77.80</span>
+              <span class="rsi rsi-low">RSI 23.7</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Corteva, Inc. Common Stock</span>
+            <span class="sector">Unknown</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span></div>
+          <div class="ma-row">~ Near MA50 &nbsp;|&nbsp; 1M: -7.3% &nbsp;|&nbsp; 3M: +1.6% &nbsp;|&nbsp; 6M: +16.7%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI deeply oversold at 23.7 — high-probability mean-reversion entry</li><li>✅ MACD histogram expanding — momentum building</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <span class="ticker">LYB</span>
+              <span class="score-bar" title="Score: 49/100">█████░░░░░ 49/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$67.30</span>
+              <span class="rsi rsi-low">RSI 24.6</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">LyondellBasell Industries N.V. Class A</span>
+            <span class="sector">INDUSTRIAL ORGANIC CHEMIC</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span></div>
+          <div class="ma-row">~ Near MA50 &nbsp;|&nbsp; 1M: -13.5% &nbsp;|&nbsp; 3M: +2.2% &nbsp;|&nbsp; 6M: +37.4%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI deeply oversold at 24.6 — high-probability mean-reversion entry</li><li>✅ MACD histogram expanding — momentum building</li><li>⚠️ Sharp 1-month drop -13.5% — verify no fundamental deterioration</li></ul>
+        </div></div>
+        </section>
+  
+  
+        <section>
+          <h2>⛔ Avoid / Weak <span class="count">(199)</span></h2>
+          <div class="card-grid">
+        <div class="stock-card avoid">
+          <div class="card-header">
+            <div class="ticker-block">
+              <span class="ticker">T</span>
+              <span class="score-bar" title="Score: 27/100">███░░░░░░░ 27/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$23.55</span>
+              <span class="rsi rsi-mid">RSI 35.5</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">AT&T Inc.</span>
+            <span class="sector">TELEPHONE COMMUNICATIONS </span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 4.7%</span></div>
+          <div class="ma-row">📉 Below MA200 &nbsp;|&nbsp; 1M: -9.1% &nbsp;|&nbsp; 3M: -18.7% &nbsp;|&nbsp; 6M: -9.5%</div>
+          
+          <ul class="signals"><li>✅ RSI at 35.5 — healthy, significant room to run</li><li>✅ Below lower Bollinger Band — extreme oversold, strong mean-reversion setup</li><li>✅ Near 52-week low (8% of annual range) — deep value zone</li><li>✅ High dividend yield 4.71% — strong income + potential capital gain</li><li>⚠️ Below MA200 — long-term downtrend, caution on new entries</li><li>⚠️ MACD bearish crossover — momentum turning down</li></ul>
+        </div>
+        <div class="stock-card avoid">
+          <div class="card-header">
+            <div class="ticker-block">
+              <span class="ticker">USB</span>
+              <span class="score-bar" title="Score: 27/100">███░░░░░░░ 27/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$53.14</span>
+              <span class="rsi rsi-mid">RSI 52.4</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">U.S. Bancorp</span>
+            <span class="sector">NATIONAL COMMERCIAL BANKS</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 3.9%</span></div>
+          <div class="ma-row">~ Near MA50 &nbsp;|&nbsp; 1M: -4.4% &nbsp;|&nbsp; 3M: -1.4% &nbsp;|&nbsp; 6M: +8.3%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ Near lower Bollinger Band (18%) — oversold entry zone</li><li>✅ Solid dividend yield 3.91% — meaningful income cushion</li><li>⚠️ MACD bearish crossover — momentum turning down</li></ul>
+        </div>
+        <div class="stock-card avoid">
+          <div class="card-header">
+            <div class="ticker-block">
+              <span class="ticker">SRE</span>
+              <span class="score-bar" title="Score: 27/100">███░░░░░░░ 27/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$89.53</span>
+              <span class="rsi rsi-mid">RSI 42.6</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Sempra</span>
+            <span class="sector">GAS & OTHER SERVICES COMB</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 2.9%</span></div>
+          <div class="ma-row">📉 Below MA200 &nbsp;|&nbsp; 1M: -5.1% &nbsp;|&nbsp; 3M: -4.7% &nbsp;|&nbsp; 6M: -5.5%</div>
+          
+          <ul class="signals"><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI at 42.6 — healthy, significant room to run</li><li>✅ MACD histogram expanding — momentum building</li><li>✅ Lower Bollinger zone (24%) — pullback entry opportunity</li><li>⚠️ Below MA200 — long-term downtrend, caution on new entries</li></ul>
+        </div>
+        <div class="stock-card avoid">
+          <div class="card-header">
+            <div class="ticker-block">
+              <span class="ticker">MET</span>
+              <span class="score-bar" title="Score: 27/100">███░░░░░░░ 27/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$80.96</span>
+              <span class="rsi rsi-mid">RSI 60.5</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">MetLife, Inc.</span>
+            <span class="sector">LIFE INSURANCE</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 2.9%</span></div>
+          <div class="ma-row">✅ Above MA50+200 &nbsp;|&nbsp; 1M: +1.3% &nbsp;|&nbsp; 3M: +11.0% &nbsp;|&nbsp; 6M: +5.7%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ Above MA50 — medium-term momentum positive</li><li>✅ Solid dividend yield 2.93% — meaningful income cushion</li></ul>
+        </div>
+        <div class="stock-card avoid">
+          <div class="card-header">
+            <div class="ticker-block">
+              <span class="ticker">KDP</span>
+              <span class="score-bar" title="Score: 27/100">███░░░░░░░ 27/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$30.55</span>
+              <span class="rsi rsi-mid">RSI 67.1</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Keurig Dr Pepper Inc.</span>
+            <span class="sector">BEVERAGES</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 3.0%</span></div>
+          <div class="ma-row">✅ Above MA50+200 &nbsp;|&nbsp; 1M: +5.6% &nbsp;|&nbsp; 3M: +8.9% &nbsp;|&nbsp; 6M: +9.5%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ Above MA50 — medium-term momentum positive</li><li>✅ MACD histogram expanding — momentum building</li><li>✅ Solid dividend yield 3.01% — meaningful income cushion</li><li>⚠️ Near upper Bollinger Band (96%) — extended, avoid chasing</li></ul>
+        </div>
+        <div class="stock-card avoid">
+          <div class="card-header">
+            <div class="ticker-block">
+              <span class="ticker">WEC</span>
+              <span class="score-bar" title="Score: 27/100">███░░░░░░░ 27/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$110.05</span>
+              <span class="rsi rsi-mid">RSI 43.2</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">WEC Energy Group, Inc.</span>
+            <span class="sector">ELECTRIC & OTHER SERVICES</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 3.5%</span></div>
+          <div class="ma-row">📉 Below MA200 &nbsp;|&nbsp; 1M: -4.5% &nbsp;|&nbsp; 3M: -5.2% &nbsp;|&nbsp; 6M: -1.1%</div>
+          
+          <ul class="signals"><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI at 43.2 — healthy, significant room to run</li><li>✅ MACD histogram expanding — momentum building</li><li>✅ Lower Bollinger zone (24%) — pullback entry opportunity</li><li>⚠️ Below MA200 — long-term downtrend, caution on new entries</li></ul>
+        </div>
+        <div class="stock-card avoid">
+          <div class="card-header">
+            <div class="ticker-block">
+              <span class="ticker">KMB</span>
+              <span class="score-bar" title="Score: 27/100">███░░░░░░░ 27/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$94.76</span>
+              <span class="rsi rsi-mid">RSI 40.8</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Kimberly-Clark Corp.</span>
+            <span class="sector">CONVERTED PAPER & PAPERBO</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 5.4%</span></div>
+          <div class="ma-row">📉 Below MA200 &nbsp;|&nbsp; 1M: -2.5% &nbsp;|&nbsp; 3M: -9.7% &nbsp;|&nbsp; 6M: -13.2%</div>
+          
+          <ul class="signals"><li>✅ RSI at 40.8 — healthy, significant room to run</li><li>✅ Below lower Bollinger Band — extreme oversold, strong mean-reversion setup</li><li>✅ Near 52-week low (4% of annual range) — deep value zone</li><li>✅ High dividend yield 5.4% — strong income + potential capital gain</li><li>⚠️ Below MA200 — long-term downtrend, caution on new entries</li><li>⚠️ MACD bearish crossover — momentum turning down</li></ul>
+        </div>
+        <div class="stock-card avoid">
+          <div class="card-header">
+            <div class="ticker-block">
+              <span class="ticker">CHTR</span>
+              <span class="score-bar" title="Score: 27/100">███░░░░░░░ 27/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$129.01</span>
+              <span class="rsi rsi-mid">RSI 35.2</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Charter Comm Inc Del CL A New</span>
+            <span class="sector">CABLE & OTHER PAY TELEVIS</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span></div>
+          <div class="ma-row">📉 Below MA200 &nbsp;|&nbsp; 1M: -18.5% &nbsp;|&nbsp; 3M: -44.4% &nbsp;|&nbsp; 6M: -33.7%</div>
+          
+          <ul class="signals"><li>✅ RSI at 35.2 — healthy, significant room to run</li><li>✅ Below lower Bollinger Band — extreme oversold, strong mean-reversion setup</li><li>✅ Near 52-week low (0% of annual range) — deep value zone</li><li>⚠️ Below MA200 — long-term downtrend, caution on new entries</li><li>⚠️ Sharp 1-month drop -18.5% — verify no fundamental deterioration</li></ul>
+        </div>
+        <div class="stock-card avoid">
+          <div class="card-header">
+            <div class="ticker-block">
+              <span class="ticker">SFM</span>
+              <span class="score-bar" title="Score: 27/100">███░░░░░░░ 27/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$78.98</span>
+              <span class="rsi rsi-low">RSI 34.0</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Sprouts Farmers Market, Inc.</span>
+            <span class="sector">RETAIL-GROCERY STORES</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span></div>
+          <div class="ma-row">📉 Below MA200 &nbsp;|&nbsp; 1M: +0.3% &nbsp;|&nbsp; 3M: +2.7% &nbsp;|&nbsp; 6M: -5.2%</div>
+          
+          <ul class="signals"><li>✅ RSI oversold at 34.0 — attractive entry territory</li><li>✅ Near lower Bollinger Band (14%) — oversold entry zone</li><li>✅ Near 52-week low (15% of annual range) — deep value zone</li><li>⚠️ Below MA200 — long-term downtrend, caution on new entries</li></ul>
+        </div>
+        <div class="stock-card avoid">
+          <div class="card-header">
+            <div class="ticker-block">
+              <span class="ticker">MS</span>
+              <span class="score-bar" title="Score: 26/100">███░░░░░░░ 26/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$210.14</span>
+              <span class="rsi rsi-high">RSI 72.3</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Morgan Stanley</span>
+            <span class="sector">SECURITY BROKERS, DEALERS</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 1.9%</span></div>
+          <div class="ma-row">✅ Above MA50+200 &nbsp;|&nbsp; 1M: +11.0% &nbsp;|&nbsp; 3M: +29.3% &nbsp;|&nbsp; 6M: +23.9%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ Above MA50 — medium-term momentum positive</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ Dividend yield 1.9%</li><li>⚠️ RSI elevated at 72.3 — stretched, monitor for reversal</li><li>⚠️ Near 52-week high (94%) — assess valuation before entering</li></ul>
+        </div></div>
+        </section>
+</main>
+
+<footer>
+  Daily Stock Advisor &nbsp;·&nbsp; Generated 2026-06-05 &nbsp;·&nbsp;
+  ⚠️ Algorithmic analysis only — NOT financial advice. Do your own due diligence.
+</footer>
+
+</body>
+</html>
