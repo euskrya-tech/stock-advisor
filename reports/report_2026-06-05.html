@@ -64,7 +64,8 @@
     .stock-card.avoid       { border-left: 3px solid var(--red); }
 
     .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
-    .ticker { font-size: 18px; font-weight: 800; color: var(--blue); margin-right: 8px; }
+    .ticker { font-size: 18px; font-weight: 800; color: var(--blue); margin-right: 8px; text-decoration: none; }
+    .ticker:hover { text-decoration: underline; }
     .score-bar { font-family: monospace; font-size: 11px; color: var(--muted); }
     .price { font-size: 16px; font-weight: 700; }
     .rsi { font-size: 12px; padding: 2px 7px; border-radius: 10px; margin-left: 6px; }
@@ -115,9 +116,12 @@
 <body>
 
 <header class="site-header">
-  <div>
-    <h1>📈 Daily Stock Advisor</h1>
-    <div class="date">2026-06-05 &nbsp;·&nbsp; 387 stocks scanned</div>
+  <div style="display:flex;align-items:center;gap:14px">
+    <a href="https://euskrya-tech.github.io/stock-advisor/" title="Home" style="font-size:22px;text-decoration:none;line-height:1">🏠</a>
+    <div>
+      <h1>📈 Daily Stock Advisor</h1>
+      <div class="date">2026-06-05 &nbsp;·&nbsp; 387 stocks scanned</div>
+    </div>
   </div>
   <div class="breadth-pill">🟡 Neutral &nbsp;·&nbsp; 49% above MA200</div>
 </header>
@@ -175,7 +179,7 @@
         <div class="stock-card strong-buy">
           <div class="card-header">
             <div class="ticker-block">
-              <span class="ticker">GOOGL</span>
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=GOOGL" target="_blank" title="View GOOGL on TradingView">GOOGL ↗</a>
               <span class="score-bar" title="Score: 68/100">███████░░░ 68/100</span>
             </div>
             <div class="price-block">
@@ -199,7 +203,7 @@
         <div class="stock-card strong-buy">
           <div class="card-header">
             <div class="ticker-block">
-              <span class="ticker">GOOG</span>
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=GOOG" target="_blank" title="View GOOG on TradingView">GOOG ↗</a>
               <span class="score-bar" title="Score: 68/100">███████░░░ 68/100</span>
             </div>
             <div class="price-block">
@@ -228,7 +232,7 @@
         <div class="stock-card watch">
           <div class="card-header">
             <div class="ticker-block">
-              <span class="ticker">HR</span>
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=HR" target="_blank" title="View HR on TradingView">HR ↗</a>
               <span class="score-bar" title="Score: 65/100">██████░░░░ 65/100</span>
             </div>
             <div class="price-block">
@@ -248,7 +252,7 @@
         <div class="stock-card watch">
           <div class="card-header">
             <div class="ticker-block">
-              <span class="ticker">BEN</span>
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=BEN" target="_blank" title="View BEN on TradingView">BEN ↗</a>
               <span class="score-bar" title="Score: 61/100">██████░░░░ 61/100</span>
             </div>
             <div class="price-block">
@@ -268,7 +272,7 @@
         <div class="stock-card watch">
           <div class="card-header">
             <div class="ticker-block">
-              <span class="ticker">CVS</span>
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=CVS" target="_blank" title="View CVS on TradingView">CVS ↗</a>
               <span class="score-bar" title="Score: 60/100">██████░░░░ 60/100</span>
             </div>
             <div class="price-block">
@@ -288,7 +292,7 @@
         <div class="stock-card watch">
           <div class="card-header">
             <div class="ticker-block">
-              <span class="ticker">SBUX</span>
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=SBUX" target="_blank" title="View SBUX on TradingView">SBUX ↗</a>
               <span class="score-bar" title="Score: 60/100">██████░░░░ 60/100</span>
             </div>
             <div class="price-block">
@@ -308,7 +312,7 @@
         <div class="stock-card watch">
           <div class="card-header">
             <div class="ticker-block">
-              <span class="ticker">MDU</span>
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=MDU" target="_blank" title="View MDU on TradingView">MDU ↗</a>
               <span class="score-bar" title="Score: 60/100">██████░░░░ 60/100</span>
             </div>
             <div class="price-block">
@@ -328,7 +332,7 @@
         <div class="stock-card watch">
           <div class="card-header">
             <div class="ticker-block">
-              <span class="ticker">DOC</span>
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=DOC" target="_blank" title="View DOC on TradingView">DOC ↗</a>
               <span class="score-bar" title="Score: 57/100">██████░░░░ 57/100</span>
             </div>
             <div class="price-block">
@@ -348,7 +352,7 @@
         <div class="stock-card watch">
           <div class="card-header">
             <div class="ticker-block">
-              <span class="ticker">VTR</span>
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=VTR" target="_blank" title="View VTR on TradingView">VTR ↗</a>
               <span class="score-bar" title="Score: 54/100">█████░░░░░ 54/100</span>
             </div>
             <div class="price-block">
@@ -368,7 +372,7 @@
         <div class="stock-card watch">
           <div class="card-header">
             <div class="ticker-block">
-              <span class="ticker">ROL</span>
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=ROL" target="_blank" title="View ROL on TradingView">ROL ↗</a>
               <span class="score-bar" title="Score: 54/100">█████░░░░░ 54/100</span>
             </div>
             <div class="price-block">
@@ -388,7 +392,7 @@
         <div class="stock-card watch">
           <div class="card-header">
             <div class="ticker-block">
-              <span class="ticker">WELL</span>
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=WELL" target="_blank" title="View WELL on TradingView">WELL ↗</a>
               <span class="score-bar" title="Score: 53/100">█████░░░░░ 53/100</span>
             </div>
             <div class="price-block">
@@ -408,7 +412,7 @@
         <div class="stock-card watch">
           <div class="card-header">
             <div class="ticker-block">
-              <span class="ticker">CME</span>
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=CME" target="_blank" title="View CME on TradingView">CME ↗</a>
               <span class="score-bar" title="Score: 53/100">█████░░░░░ 53/100</span>
             </div>
             <div class="price-block">
@@ -428,7 +432,7 @@
         <div class="stock-card watch">
           <div class="card-header">
             <div class="ticker-block">
-              <span class="ticker">PM</span>
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=PM" target="_blank" title="View PM on TradingView">PM ↗</a>
               <span class="score-bar" title="Score: 52/100">█████░░░░░ 52/100</span>
             </div>
             <div class="price-block">
@@ -448,7 +452,7 @@
         <div class="stock-card watch">
           <div class="card-header">
             <div class="ticker-block">
-              <span class="ticker">OLN</span>
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=OLN" target="_blank" title="View OLN on TradingView">OLN ↗</a>
               <span class="score-bar" title="Score: 52/100">█████░░░░░ 52/100</span>
             </div>
             <div class="price-block">
@@ -468,7 +472,7 @@
         <div class="stock-card watch">
           <div class="card-header">
             <div class="ticker-block">
-              <span class="ticker">AMZN</span>
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=AMZN" target="_blank" title="View AMZN on TradingView">AMZN ↗</a>
               <span class="score-bar" title="Score: 51/100">█████░░░░░ 51/100</span>
             </div>
             <div class="price-block">
@@ -488,7 +492,7 @@
         <div class="stock-card watch">
           <div class="card-header">
             <div class="ticker-block">
-              <span class="ticker">UNH</span>
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=UNH" target="_blank" title="View UNH on TradingView">UNH ↗</a>
               <span class="score-bar" title="Score: 51/100">█████░░░░░ 51/100</span>
             </div>
             <div class="price-block">
@@ -508,7 +512,7 @@
         <div class="stock-card watch">
           <div class="card-header">
             <div class="ticker-block">
-              <span class="ticker">MO</span>
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=MO" target="_blank" title="View MO on TradingView">MO ↗</a>
               <span class="score-bar" title="Score: 51/100">█████░░░░░ 51/100</span>
             </div>
             <div class="price-block">
@@ -528,7 +532,7 @@
         <div class="stock-card watch">
           <div class="card-header">
             <div class="ticker-block">
-              <span class="ticker">BX</span>
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=BX" target="_blank" title="View BX on TradingView">BX ↗</a>
               <span class="score-bar" title="Score: 50/100">█████░░░░░ 50/100</span>
             </div>
             <div class="price-block">
@@ -548,7 +552,7 @@
         <div class="stock-card watch">
           <div class="card-header">
             <div class="ticker-block">
-              <span class="ticker">GEV</span>
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=GEV" target="_blank" title="View GEV on TradingView">GEV ↗</a>
               <span class="score-bar" title="Score: 49/100">█████░░░░░ 49/100</span>
             </div>
             <div class="price-block">
@@ -568,7 +572,7 @@
         <div class="stock-card watch">
           <div class="card-header">
             <div class="ticker-block">
-              <span class="ticker">AFL</span>
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=AFL" target="_blank" title="View AFL on TradingView">AFL ↗</a>
               <span class="score-bar" title="Score: 49/100">█████░░░░░ 49/100</span>
             </div>
             <div class="price-block">
@@ -588,7 +592,7 @@
         <div class="stock-card watch">
           <div class="card-header">
             <div class="ticker-block">
-              <span class="ticker">CTVA</span>
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=CTVA" target="_blank" title="View CTVA on TradingView">CTVA ↗</a>
               <span class="score-bar" title="Score: 49/100">█████░░░░░ 49/100</span>
             </div>
             <div class="price-block">
@@ -608,7 +612,7 @@
         <div class="stock-card watch">
           <div class="card-header">
             <div class="ticker-block">
-              <span class="ticker">LYB</span>
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=LYB" target="_blank" title="View LYB on TradingView">LYB ↗</a>
               <span class="score-bar" title="Score: 49/100">█████░░░░░ 49/100</span>
             </div>
             <div class="price-block">
@@ -634,7 +638,7 @@
         <div class="stock-card avoid">
           <div class="card-header">
             <div class="ticker-block">
-              <span class="ticker">T</span>
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=T" target="_blank" title="View T on TradingView">T ↗</a>
               <span class="score-bar" title="Score: 27/100">███░░░░░░░ 27/100</span>
             </div>
             <div class="price-block">
@@ -654,7 +658,7 @@
         <div class="stock-card avoid">
           <div class="card-header">
             <div class="ticker-block">
-              <span class="ticker">USB</span>
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=USB" target="_blank" title="View USB on TradingView">USB ↗</a>
               <span class="score-bar" title="Score: 27/100">███░░░░░░░ 27/100</span>
             </div>
             <div class="price-block">
@@ -674,7 +678,7 @@
         <div class="stock-card avoid">
           <div class="card-header">
             <div class="ticker-block">
-              <span class="ticker">SRE</span>
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=SRE" target="_blank" title="View SRE on TradingView">SRE ↗</a>
               <span class="score-bar" title="Score: 27/100">███░░░░░░░ 27/100</span>
             </div>
             <div class="price-block">
@@ -694,7 +698,7 @@
         <div class="stock-card avoid">
           <div class="card-header">
             <div class="ticker-block">
-              <span class="ticker">MET</span>
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=MET" target="_blank" title="View MET on TradingView">MET ↗</a>
               <span class="score-bar" title="Score: 27/100">███░░░░░░░ 27/100</span>
             </div>
             <div class="price-block">
@@ -714,7 +718,7 @@
         <div class="stock-card avoid">
           <div class="card-header">
             <div class="ticker-block">
-              <span class="ticker">KDP</span>
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=KDP" target="_blank" title="View KDP on TradingView">KDP ↗</a>
               <span class="score-bar" title="Score: 27/100">███░░░░░░░ 27/100</span>
             </div>
             <div class="price-block">
@@ -734,7 +738,7 @@
         <div class="stock-card avoid">
           <div class="card-header">
             <div class="ticker-block">
-              <span class="ticker">WEC</span>
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=WEC" target="_blank" title="View WEC on TradingView">WEC ↗</a>
               <span class="score-bar" title="Score: 27/100">███░░░░░░░ 27/100</span>
             </div>
             <div class="price-block">
@@ -754,7 +758,7 @@
         <div class="stock-card avoid">
           <div class="card-header">
             <div class="ticker-block">
-              <span class="ticker">KMB</span>
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=KMB" target="_blank" title="View KMB on TradingView">KMB ↗</a>
               <span class="score-bar" title="Score: 27/100">███░░░░░░░ 27/100</span>
             </div>
             <div class="price-block">
@@ -774,7 +778,7 @@
         <div class="stock-card avoid">
           <div class="card-header">
             <div class="ticker-block">
-              <span class="ticker">CHTR</span>
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=CHTR" target="_blank" title="View CHTR on TradingView">CHTR ↗</a>
               <span class="score-bar" title="Score: 27/100">███░░░░░░░ 27/100</span>
             </div>
             <div class="price-block">
@@ -794,7 +798,7 @@
         <div class="stock-card avoid">
           <div class="card-header">
             <div class="ticker-block">
-              <span class="ticker">SFM</span>
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=SFM" target="_blank" title="View SFM on TradingView">SFM ↗</a>
               <span class="score-bar" title="Score: 27/100">███░░░░░░░ 27/100</span>
             </div>
             <div class="price-block">
@@ -814,7 +818,7 @@
         <div class="stock-card avoid">
           <div class="card-header">
             <div class="ticker-block">
-              <span class="ticker">MS</span>
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=MS" target="_blank" title="View MS on TradingView">MS ↗</a>
               <span class="score-bar" title="Score: 26/100">███░░░░░░░ 26/100</span>
             </div>
             <div class="price-block">
@@ -855,7 +859,7 @@
             </tr></thead>
             <tbody>
             <tr>
-              <td><strong style="color:var(--blue)">INTC</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=INTC" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">INTC ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Intel Corp</td>
               <td style="color:var(--yellow);font-weight:600">WATCH</td>
               <td>45/100</td>
@@ -865,7 +869,7 @@
               <td style="color:var(--green)">+145.3%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">MCHP</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=MCHP" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">MCHP ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Microchip Technology Inc</td>
               <td style="color:var(--yellow);font-weight:600">WATCH</td>
               <td>44/100</td>
@@ -875,7 +879,7 @@
               <td style="color:var(--green)">+42.4%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">TXN</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=TXN" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">TXN ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Texas Instruments Incorporated</td>
               <td style="color:var(--yellow);font-weight:600">WATCH</td>
               <td>44/100</td>
@@ -885,7 +889,7 @@
               <td style="color:var(--green)">+55.9%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">NVDA</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=NVDA" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">NVDA ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Nvidia Corp</td>
               <td style="color:var(--muted);font-weight:600">HOLD</td>
               <td>39/100</td>
@@ -895,7 +899,7 @@
               <td style="color:var(--green)">+17.1%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">QCOM</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=QCOM" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">QCOM ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Qualcomm Inc</td>
               <td style="color:var(--muted);font-weight:600">HOLD</td>
               <td>35/100</td>
@@ -905,7 +909,7 @@
               <td style="color:var(--green)">+82.5%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">ADI</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=ADI" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">ADI ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Analog Devices, Inc.</td>
               <td style="color:var(--muted);font-weight:600">HOLD</td>
               <td>34/100</td>
@@ -915,7 +919,7 @@
               <td style="color:var(--green)">+32.7%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">AVGO</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=AVGO" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">AVGO ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Broadcom Inc. Common Stock</td>
               <td style="color:var(--muted);font-weight:600">HOLD</td>
               <td>31/100</td>
@@ -925,7 +929,7 @@
               <td style="color:var(--green)">+44.0%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">ON</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=ON" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">ON ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">ON Semiconductor Corp</td>
               <td style="color:var(--muted);font-weight:600">HOLD</td>
               <td>29/100</td>
@@ -935,7 +939,7 @@
               <td style="color:var(--green)">+120.1%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">NXPI</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=NXPI" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">NXPI ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">NXP Semiconductors N.V.</td>
               <td style="color:var(--muted);font-weight:600">HOLD</td>
               <td>29/100</td>
@@ -945,7 +949,7 @@
               <td style="color:var(--green)">+52.9%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">MRVL</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=MRVL" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">MRVL ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Marvell Technology, Inc. Common </td>
               <td style="color:var(--red);font-weight:600">AVOID</td>
               <td>26/100</td>
@@ -955,7 +959,7 @@
               <td style="color:var(--green)">+298.6%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">AMD</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=AMD" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">AMD ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Advanced Micro Devices</td>
               <td style="color:var(--red);font-weight:600">AVOID</td>
               <td>22/100</td>
@@ -965,7 +969,7 @@
               <td style="color:var(--green)">+172.0%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">AMAT</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=AMAT" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">AMAT ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Applied Materials Inc</td>
               <td style="color:var(--red);font-weight:600">AVOID</td>
               <td>22/100</td>
@@ -975,7 +979,7 @@
               <td style="color:var(--green)">+44.5%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">LRCX</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=LRCX" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">LRCX ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Lam Research Corp</td>
               <td style="color:var(--red);font-weight:600">AVOID</td>
               <td>22/100</td>
@@ -985,7 +989,7 @@
               <td style="color:var(--green)">+60.1%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">MU</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=MU" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">MU ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Micron Technology, Inc.</td>
               <td style="color:var(--red);font-weight:600">AVOID</td>
               <td>17/100</td>
@@ -995,7 +999,7 @@
               <td style="color:var(--green)">+171.9%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">ASML</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=ASML" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">ASML ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">ASML Holding NV</td>
               <td style="color:var(--red);font-weight:600">AVOID</td>
               <td>7/100</td>
@@ -1005,7 +1009,7 @@
               <td style="color:var(--green)">+26.9%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">SMCI</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=SMCI" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">SMCI ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Super Micro Computer, Inc. Commo</td>
               <td style="color:var(--red);font-weight:600">AVOID</td>
               <td>6/100</td>
@@ -1015,7 +1019,7 @@
               <td style="color:var(--green)">+47.1%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">KLAC</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=KLAC" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">KLAC ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">KLAC</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1025,7 +1029,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">MPWR</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=MPWR" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">MPWR ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">MPWR</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1035,7 +1039,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">ARM</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=ARM" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">ARM ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">Arm Holdings</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1057,7 +1061,7 @@
             </tr></thead>
             <tbody>
             <tr>
-              <td><strong style="color:var(--blue)">GOOGL</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=GOOGL" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">GOOGL ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Alphabet Inc. Class A Common Sto</td>
               <td style="color:var(--green);font-weight:600">STRONG BUY</td>
               <td>68/100</td>
@@ -1067,7 +1071,7 @@
               <td style="color:var(--green)">+19.3%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">AMZN</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=AMZN" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">AMZN ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Amazon.Com Inc</td>
               <td style="color:var(--yellow);font-weight:600">WATCH</td>
               <td>51/100</td>
@@ -1077,7 +1081,7 @@
               <td style="color:var(--green)">+14.2%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">DDOG</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=DDOG" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">DDOG ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Datadog, Inc. Class A Common Sto</td>
               <td style="color:var(--muted);font-weight:600">HOLD</td>
               <td>29/100</td>
@@ -1087,7 +1091,7 @@
               <td style="color:var(--green)">+104.6%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">ORCL</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=ORCL" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">ORCL ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Oracle Corp</td>
               <td style="color:var(--red);font-weight:600">AVOID</td>
               <td>24/100</td>
@@ -1097,7 +1101,7 @@
               <td style="color:var(--green)">+48.8%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">META</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=META" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">META ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Meta Platforms, Inc. Class A Com</td>
               <td style="color:var(--red);font-weight:600">AVOID</td>
               <td>22/100</td>
@@ -1107,7 +1111,7 @@
               <td style="color:var(--red)">-5.7%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">PANW</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=PANW" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">PANW ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Palo Alto Networks, Inc. Common </td>
               <td style="color:var(--red);font-weight:600">AVOID</td>
               <td>22/100</td>
@@ -1117,7 +1121,7 @@
               <td style="color:var(--green)">+71.9%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">ZS</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=ZS" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">ZS ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">Zscaler, Inc. Common Stock</td>
               <td style="color:var(--red);font-weight:600">AVOID</td>
               <td>19/100</td>
@@ -1127,7 +1131,7 @@
               <td style="color:var(--red)">-17.0%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">CRWD</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=CRWD" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">CRWD ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">CrowdStrike Holdings, Inc. Class</td>
               <td style="color:var(--red);font-weight:600">AVOID</td>
               <td>17/100</td>
@@ -1137,7 +1141,7 @@
               <td style="color:var(--green)">+75.4%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">MSFT</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=MSFT" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">MSFT ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Microsoft Corp</td>
               <td style="color:var(--red);font-weight:600">AVOID</td>
               <td>8/100</td>
@@ -1147,7 +1151,7 @@
               <td style="color:var(--green)">+4.1%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">CRM</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=CRM" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">CRM ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Salesforce, Inc.</td>
               <td style="color:var(--red);font-weight:600">AVOID</td>
               <td>8/100</td>
@@ -1157,7 +1161,7 @@
               <td style="color:var(--red)">-5.4%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">NOW</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=NOW" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">NOW ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">SERVICENOW, INC.</td>
               <td style="color:var(--red);font-weight:600">AVOID</td>
               <td>8/100</td>
@@ -1167,7 +1171,7 @@
               <td style="color:var(--red)">-2.1%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">WDAY</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=WDAY" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">WDAY ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Workday, Inc. Class A Common Sto</td>
               <td style="color:var(--red);font-weight:600">AVOID</td>
               <td>1/100</td>
@@ -1177,7 +1181,7 @@
               <td style="color:var(--red)">-0.2%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">NET</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=NET" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">NET ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">NET</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1187,7 +1191,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">SNOW</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=SNOW" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">SNOW ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">SNOW</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1209,7 +1213,7 @@
             </tr></thead>
             <tbody>
             <tr>
-              <td><strong style="color:var(--blue)">PLTR</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=PLTR" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">PLTR ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">PLTR</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1219,7 +1223,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">NBIS</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=NBIS" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">NBIS ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">Nebius Group</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1229,7 +1233,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">WULF</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=WULF" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">WULF ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">TeraWulf</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1239,7 +1243,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">CORZ</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=CORZ" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">CORZ ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">Core Scientific</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1249,7 +1253,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">CIFR</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=CIFR" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">CIFR ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">Cipher Mining</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1259,7 +1263,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">APLD</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=APLD" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">APLD ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">Applied Digital</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1269,7 +1273,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">IREN</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=IREN" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">IREN ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">Iris Energy</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1279,7 +1283,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">HUT</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=HUT" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">HUT ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">Hut 8 Corp</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1289,7 +1293,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">BTBT</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=BTBT" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">BTBT ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">Bit Digital</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1299,7 +1303,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">GBTC</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=GBTC" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">GBTC ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">Grayscale Bitcoin Trust</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1309,7 +1313,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">AI</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=AI" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">AI ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">C3.ai</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1319,7 +1323,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">BBAI</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=BBAI" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">BBAI ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">BigBear.ai</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1329,7 +1333,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">SOUN</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=SOUN" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">SOUN ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">SoundHound AI</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1339,7 +1343,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">PATH</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=PATH" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">PATH ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">UiPath</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1349,7 +1353,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">RXRX</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=RXRX" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">RXRX ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">Recursion Pharma</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1359,7 +1363,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">SERV</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=SERV" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">SERV ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">Serve Robotics</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1381,7 +1385,7 @@
             </tr></thead>
             <tbody>
             <tr>
-              <td><strong style="color:var(--blue)">GEV</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=GEV" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">GEV ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">GE Vernova Inc.</td>
               <td style="color:var(--yellow);font-weight:600">WATCH</td>
               <td>49/100</td>
@@ -1391,7 +1395,7 @@
               <td style="color:var(--green)">+17.7%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">ETN</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=ETN" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">ETN ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Eaton Corporation, plc Ordinary </td>
               <td style="color:var(--muted);font-weight:600">HOLD</td>
               <td>40/100</td>
@@ -1401,7 +1405,7 @@
               <td style="color:var(--green)">+18.7%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">NEE</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=NEE" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">NEE ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">NextEra Energy, Inc.</td>
               <td style="color:var(--muted);font-weight:600">HOLD</td>
               <td>39/100</td>
@@ -1411,7 +1415,7 @@
               <td style="color:var(--red)">-7.2%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">EMR</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=EMR" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">EMR ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Emerson Electric Co.</td>
               <td style="color:var(--muted);font-weight:600">HOLD</td>
               <td>34/100</td>
@@ -1421,7 +1425,7 @@
               <td style="color:var(--red)">-0.9%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">AES</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=AES" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">AES ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">AES Corporation</td>
               <td style="color:var(--red);font-weight:600">AVOID</td>
               <td>23/100</td>
@@ -1431,7 +1435,7 @@
               <td style="color:var(--green)">+3.4%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">GE</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=GE" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">GE ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">GE Aerospace</td>
               <td style="color:var(--red);font-weight:600">AVOID</td>
               <td>20/100</td>
@@ -1441,7 +1445,7 @@
               <td style="color:var(--red)">-3.8%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">NRG</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=NRG" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">NRG ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">NRG Energy, Inc.</td>
               <td style="color:var(--red);font-weight:600">AVOID</td>
               <td>16/100</td>
@@ -1451,7 +1455,7 @@
               <td style="color:var(--red)">-16.6%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">CEG</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=CEG" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">CEG ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Constellation Energy Corporation</td>
               <td style="color:var(--red);font-weight:600">AVOID</td>
               <td>14/100</td>
@@ -1461,7 +1465,7 @@
               <td style="color:var(--red)">-19.5%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">VST</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=VST" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">VST ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Vistra Corp.</td>
               <td style="color:var(--red);font-weight:600">AVOID</td>
               <td>—</td>
@@ -1471,7 +1475,7 @@
               <td style="color:var(--red)">-8.1%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">PWR</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=PWR" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">PWR ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">PWR</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1481,7 +1485,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">OKLO</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=OKLO" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">OKLO ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">Oklo Inc</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1491,7 +1495,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">NNE</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=NNE" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">NNE ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">Nano Nuclear Energy</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1501,7 +1505,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">SMR</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=SMR" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">SMR ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">NuScale Power</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1511,7 +1515,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">AMRC</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=AMRC" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">AMRC ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">Ameresco</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1533,7 +1537,7 @@
             </tr></thead>
             <tbody>
             <tr>
-              <td><strong style="color:var(--blue)">CSCO</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=CSCO" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">CSCO ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Cisco Systems, Inc. Common Stock</td>
               <td style="color:var(--red);font-weight:600">AVOID</td>
               <td>17/100</td>
@@ -1543,7 +1547,7 @@
               <td style="color:var(--green)">+58.1%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">ANET</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=ANET" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">ANET ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Arista Networks</td>
               <td style="color:var(--red);font-weight:600">AVOID</td>
               <td>17/100</td>
@@ -1553,7 +1557,7 @@
               <td style="color:var(--green)">+25.1%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">CIEN</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=CIEN" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">CIEN ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">Ciena Corp</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1563,7 +1567,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">COHR</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=COHR" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">COHR ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">Coherent Corp</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1573,7 +1577,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">LITE</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=LITE" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">LITE ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">Lumentum</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1583,7 +1587,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">AAOI</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=AAOI" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">AAOI ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">Applied Optoelectronics</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1593,7 +1597,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">INFN</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=INFN" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">INFN ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">Infinera</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1603,7 +1607,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">JNPR</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=JNPR" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">JNPR ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">JNPR</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1613,7 +1617,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">COMM</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=COMM" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">COMM ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">CommScope</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1623,7 +1627,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">VIAV</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=VIAV" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">VIAV ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">Viavi Solutions</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1645,7 +1649,7 @@
             </tr></thead>
             <tbody>
             <tr>
-              <td><strong style="color:var(--blue)">CARR</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=CARR" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">CARR ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Carrier Global Corporation</td>
               <td style="color:var(--yellow);font-weight:600">WATCH</td>
               <td>44/100</td>
@@ -1655,7 +1659,7 @@
               <td style="color:var(--green)">+11.9%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">JCI</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=JCI" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">JCI ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Johnson Controls International p</td>
               <td style="color:var(--muted);font-weight:600">HOLD</td>
               <td>38/100</td>
@@ -1665,7 +1669,7 @@
               <td style="color:var(--green)">+7.1%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">HPE</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=HPE" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">HPE ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Hewlett Packard Enterprise Compa</td>
               <td style="color:var(--red);font-weight:600">AVOID</td>
               <td>26/100</td>
@@ -1675,7 +1679,7 @@
               <td style="color:var(--green)">+156.9%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">STX</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=STX" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">STX ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Seagate Technology Holdings PLC </td>
               <td style="color:var(--red);font-weight:600">AVOID</td>
               <td>22/100</td>
@@ -1685,7 +1689,7 @@
               <td style="color:var(--green)">+156.1%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">WDC</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=WDC" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">WDC ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Western Digital Corp.</td>
               <td style="color:var(--red);font-weight:600">AVOID</td>
               <td>17/100</td>
@@ -1695,7 +1699,7 @@
               <td style="color:var(--green)">+129.4%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">VRT</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=VRT" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">VRT ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">VRT</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1705,7 +1709,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">DELL</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=DELL" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">DELL ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">DELL</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1715,7 +1719,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">TT</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=TT" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">TT ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">TT</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1725,7 +1729,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">GNRC</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=GNRC" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">GNRC ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">GNRC</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1735,7 +1739,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">HUBB</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=HUBB" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">HUBB ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">Hubbell</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1757,7 +1761,7 @@
             </tr></thead>
             <tbody>
             <tr>
-              <td><strong style="color:var(--blue)">GOOGL</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=GOOGL" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">GOOGL ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Alphabet Inc. Class A Common Sto</td>
               <td style="color:var(--green);font-weight:600">STRONG BUY</td>
               <td>68/100</td>
@@ -1767,7 +1771,7 @@
               <td style="color:var(--green)">+19.3%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">AMZN</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=AMZN" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">AMZN ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Amazon.Com Inc</td>
               <td style="color:var(--yellow);font-weight:600">WATCH</td>
               <td>51/100</td>
@@ -1777,7 +1781,7 @@
               <td style="color:var(--green)">+14.2%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">ADSK</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=ADSK" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">ADSK ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">Autodesk Inc</td>
               <td style="color:var(--red);font-weight:600">AVOID</td>
               <td>22/100</td>
@@ -1787,7 +1791,7 @@
               <td style="color:var(--red)">-13.1%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">SNPS</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=SNPS" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">SNPS ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">Synopsys Inc</td>
               <td style="color:var(--red);font-weight:600">AVOID</td>
               <td>18/100</td>
@@ -1797,7 +1801,7 @@
               <td style="color:var(--green)">+17.4%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">CDNS</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=CDNS" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">CDNS ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">Cadence Design Systems</td>
               <td style="color:var(--red);font-weight:600">AVOID</td>
               <td>16/100</td>
@@ -1807,7 +1811,7 @@
               <td style="color:var(--green)">+36.1%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">IBM</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=IBM" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">IBM ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">International Business Machines </td>
               <td style="color:var(--red);font-weight:600">AVOID</td>
               <td>16/100</td>
@@ -1817,7 +1821,7 @@
               <td style="color:var(--green)">+19.1%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">ACN</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=ACN" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">ACN ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Accenture PLC</td>
               <td style="color:var(--red);font-weight:600">AVOID</td>
               <td>12/100</td>
@@ -1827,7 +1831,7 @@
               <td style="color:var(--red)">-17.1%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">MSFT</strong> 🌟</td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=MSFT" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">MSFT ↗</a> 🌟</td>
               <td style="color:var(--muted);font-size:12px">Microsoft Corp</td>
               <td style="color:var(--red);font-weight:600">AVOID</td>
               <td>8/100</td>
@@ -1837,7 +1841,7 @@
               <td style="color:var(--green)">+4.1%</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">ANSS</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=ANSS" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">ANSS ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">ANSS</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
@@ -1847,7 +1851,7 @@
               <td style="color:var(--muted)">—</td>
             </tr>
             <tr>
-              <td><strong style="color:var(--blue)">EPAM</strong> </td>
+              <td><a href="https://www.tradingview.com/chart/?symbol=EPAM" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">EPAM ↗</a> </td>
               <td style="color:var(--muted);font-size:12px">EPAM</td>
               <td style="color:var(--muted);font-weight:600">—</td>
               <td>—</td>
