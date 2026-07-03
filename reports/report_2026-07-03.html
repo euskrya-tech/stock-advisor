@@ -1,0 +1,1984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Stock Advisor — 2026-07-03</title>
+  <style>
+    :root {
+      --bg: #0d1117; --bg2: #161b22; --bg3: #21262d;
+      --border: #30363d; --text: #e6edf3; --muted: #8b949e;
+      --green: #3fb950; --red: #f85149; --yellow: #d29922;
+      --blue: #58a6ff; --purple: #bc8cff; --orange: #ffa657;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-size: 14px; line-height: 1.5; }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Header */
+    .site-header { background: var(--bg2); border-bottom: 1px solid var(--border);
+                    padding: 16px 24px; display: flex; align-items: center;
+                    justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+    .site-header h1 { font-size: 20px; font-weight: 700; }
+    .site-header .date { color: var(--muted); font-size: 13px; }
+    .breadth-pill { padding: 4px 12px; border-radius: 20px; font-size: 13px;
+                     font-weight: 600; background: var(--bg3); border: 1px solid var(--border); }
+
+    /* Stat bar */
+    .stat-bar { display: flex; gap: 16px; flex-wrap: wrap;
+                 padding: 16px 24px; background: var(--bg2);
+                 border-bottom: 1px solid var(--border); }
+    .stat { text-align: center; }
+    .stat .val { font-size: 24px; font-weight: 700; }
+    .stat .lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; }
+    .stat.green .val { color: var(--green); }
+    .stat.yellow .val { color: var(--yellow); }
+    .stat.red .val { color: var(--red); }
+    .stat.blue .val { color: var(--blue); }
+
+    /* Alerts */
+    .alerts { padding: 0 24px; margin-top: 16px; display: flex; flex-direction: column; gap: 8px; }
+    .alert { padding: 10px 16px; border-radius: 6px; font-weight: 600; font-size: 13px; }
+    .alert-golden { background: rgba(210,153,34,0.15); border: 1px solid var(--yellow); color: var(--yellow); }
+    .alert-death  { background: rgba(248,81,73,0.12);  border: 1px solid var(--red);    color: var(--red); }
+
+    /* Main */
+    main { max-width: 1400px; margin: 0 auto; padding: 24px; }
+    section { margin-bottom: 40px; }
+    section h2 { font-size: 17px; font-weight: 700; margin-bottom: 14px;
+                  padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    .count { color: var(--muted); font-weight: 400; font-size: 14px; }
+    .section-note { color: var(--muted); font-size: 13px; margin-bottom: 12px; margin-top: -8px; }
+
+    /* Cards */
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; }
+    .stock-card { background: var(--bg2); border: 1px solid var(--border);
+                   border-radius: 8px; padding: 14px; transition: border-color .15s; }
+    .stock-card:hover { border-color: var(--blue); }
+    .stock-card.strong-buy { border-left: 3px solid var(--green); }
+    .stock-card.watch       { border-left: 3px solid var(--yellow); }
+    .stock-card.hold        { border-left: 3px solid var(--muted); }
+    .stock-card.avoid       { border-left: 3px solid var(--red); }
+
+    .card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+    .ticker { font-size: 18px; font-weight: 800; color: var(--blue); margin-right: 8px; text-decoration: none; }
+    .ticker:hover { text-decoration: underline; }
+    .score-bar { font-family: monospace; font-size: 11px; color: var(--muted); }
+    .price { font-size: 16px; font-weight: 700; }
+    .rsi { font-size: 12px; padding: 2px 7px; border-radius: 10px; margin-left: 6px; }
+    .rsi-low  { background: rgba(63,185,80,.2);  color: var(--green); }
+    .rsi-mid  { background: rgba(88,166,255,.15); color: var(--blue); }
+    .rsi-high { background: rgba(248,81,73,.2);  color: var(--red); }
+
+    .meta-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
+    .name { color: var(--muted); font-size: 12px; }
+    .sector { color: var(--purple); font-size: 11px; }
+    .ma-row { font-size: 12px; color: var(--muted); margin: 6px 0; }
+
+    .badge-row { display: flex; flex-wrap: wrap; gap: 4px; margin: 6px 0; }
+    .badge { font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+    .badge.golden  { background: rgba(210,153,34,.2); color: var(--yellow); }
+    .badge.death   { background: rgba(248,81,73,.15); color: var(--red); }
+    .badge.div     { background: rgba(63,185,80,.15); color: var(--green); }
+    .badge.blackout { background: rgba(255,166,87,.15); color: var(--orange); }
+
+    .position-box { background: rgba(63,185,80,.1); border: 1px solid rgba(63,185,80,.3);
+                     border-radius: 6px; padding: 7px 10px; margin: 8px 0; font-size: 12px; }
+
+    .signals { list-style: none; margin-top: 8px; }
+    .signals li { font-size: 12px; color: var(--muted); padding: 2px 0; }
+    .signals li:before { margin-right: 4px; }
+
+    /* Position table */
+    .table-wrap { overflow-x: auto; }
+    .pos-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .pos-table th { background: var(--bg3); color: var(--muted); text-align: left;
+                     padding: 8px 12px; font-weight: 600; border-bottom: 1px solid var(--border); }
+    .pos-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); }
+    .pos-table tr:hover td { background: var(--bg3); }
+
+    /* Footer */
+    footer { text-align: center; color: var(--muted); font-size: 12px;
+              padding: 24px; border-top: 1px solid var(--border); margin-top: 40px; }
+
+    /* Mobile */
+    @media (max-width: 600px) {
+      .card-grid { grid-template-columns: 1fr; }
+      .stat-bar { gap: 12px; }
+      .stat .val { font-size: 20px; }
+      main { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div style="display:flex;align-items:center;gap:14px">
+    <a href="https://euskrya-tech.github.io/stock-advisor/" title="Home" style="font-size:22px;text-decoration:none;line-height:1">🏠</a>
+    <div>
+      <h1>📈 Daily Stock Advisor</h1>
+      <div class="date">2026-07-03 &nbsp;·&nbsp; 387 stocks scanned</div>
+    </div>
+  </div>
+  <div class="breadth-pill">🟡 Neutral &nbsp;·&nbsp; 64% above MA200</div>
+</header>
+
+<div class="stat-bar">
+  <div class="stat green"><div class="val">0</div><div class="lbl">Strong Buy</div></div>
+  <div class="stat yellow"><div class="val">72</div><div class="lbl">Watch</div></div>
+  <div class="stat red"><div class="val">165</div><div class="lbl">Avoid</div></div>
+  <div class="stat blue"><div class="val">64%</div><div class="lbl">Above MA200</div></div>
+  <div class="stat blue"><div class="val">—</div><div class="lbl">Golden Cross</div></div>
+  <div class="stat blue"><div class="val">—</div><div class="lbl">Death Cross</div></div>
+  <div class="stat blue"><div class="val">$0</div><div class="lbl">Suggested Deploy</div></div>
+</div>
+
+
+
+<main>
+  
+  
+  
+        <section>
+          <h2>👀 Watch — Developing setups <span class="count">(72)</span></h2>
+          <div class="card-grid">
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=AES" target="_blank" title="View AES on TradingView">AES ↗</a>
+              <span class="score-bar" title="Score: 66/100">███████░░░ 66/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$14.58</span>
+              <span class="rsi rsi-mid">RSI 37.8</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">AES Corporation</span>
+            <span class="sector">COGENERATION SERVICES & S</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 4.8%</span></div>
+          <div class="ma-row">✅ Above MA50+200 &nbsp;|&nbsp; 1M: -0.9% &nbsp;|&nbsp; 3M: +2.0% &nbsp;|&nbsp; 6M: +1.7%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ Above MA50 — medium-term momentum positive</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI at 37.8 — healthy, significant room to run</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=IRM" target="_blank" title="View IRM on TradingView">IRM ↗</a>
+              <span class="score-bar" title="Score: 59/100">██████░░░░ 59/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$117.16</span>
+              <span class="rsi rsi-mid">RSI 36.8</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Iron Mountain Inc.</span>
+            <span class="sector">REAL ESTATE INVESTMENT TR</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 2.7%</span></div>
+          <div class="ma-row">~ Near MA50 &nbsp;|&nbsp; 1M: -7.3% &nbsp;|&nbsp; 3M: +16.5% &nbsp;|&nbsp; 6M: +42.1%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI at 36.8 — healthy, significant room to run</li><li>✅ Volume surge 1.71x 20-day average — likely institutional accumulation</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=DXCM" target="_blank" title="View DXCM on TradingView">DXCM ↗</a>
+              <span class="score-bar" title="Score: 59/100">██████░░░░ 59/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$71.25</span>
+              <span class="rsi rsi-mid">RSI 39.6</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">DexCom, Inc.</span>
+            <span class="sector">SURGICAL & MEDICAL INSTRU</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span></div>
+          <div class="ma-row">✅ Above MA50+200 &nbsp;|&nbsp; 1M: -2.1% &nbsp;|&nbsp; 3M: +14.5% &nbsp;|&nbsp; 6M: +7.4%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ Above MA50 — medium-term momentum positive</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ 🌟 GOLDEN CROSS — MA50 just crossed above MA200 (rare, high-conviction signal)</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=F" target="_blank" title="View F on TradingView">F ↗</a>
+              <span class="score-bar" title="Score: 58/100">██████░░░░ 58/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$13.36</span>
+              <span class="rsi rsi-low">RSI 22.9</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Ford Motor Company</span>
+            <span class="sector">MOTOR VEHICLES & PASSENGE</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 3.8%</span></div>
+          <div class="ma-row">~ Near MA50 &nbsp;|&nbsp; 1M: -15.0% &nbsp;|&nbsp; 3M: +15.2% &nbsp;|&nbsp; 6M: +1.8%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI deeply oversold at 22.9 — high-probability mean-reversion entry</li><li>✅ Below lower Bollinger Band — extreme oversold, strong mean-reversion setup</li><li>⚠️ Sharp 1-month drop -15.0% — verify no fundamental deterioration</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=HST" target="_blank" title="View HST on TradingView">HST ↗</a>
+              <span class="score-bar" title="Score: 58/100">██████░░░░ 58/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$23.35</span>
+              <span class="rsi rsi-mid">RSI 38.4</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Host Hotels & Resorts, Inc.</span>
+            <span class="sector">REAL ESTATE INVESTMENT TR</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 3.4%</span></div>
+          <div class="ma-row">✅ Above MA50+200 &nbsp;|&nbsp; 1M: -2.1% &nbsp;|&nbsp; 3M: +22.0% &nbsp;|&nbsp; 6M: +31.7%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ Above MA50 — medium-term momentum positive</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI at 38.4 — healthy, significant room to run</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=NUE" target="_blank" title="View NUE on TradingView">NUE ↗</a>
+              <span class="score-bar" title="Score: 57/100">██████░░░░ 57/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$220.75</span>
+              <span class="rsi rsi-low">RSI 23.3</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Nucor Corporation</span>
+            <span class="sector">STEEL WORKS, BLAST FURNAC</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span></div>
+          <div class="ma-row">~ Near MA50 &nbsp;|&nbsp; 1M: -14.3% &nbsp;|&nbsp; 3M: +35.6% &nbsp;|&nbsp; 6M: +32.5%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI deeply oversold at 23.3 — high-probability mean-reversion entry</li><li>✅ MACD histogram expanding — momentum building</li><li>⚠️ Sharp 1-month drop -14.3% — verify no fundamental deterioration</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=CSCO" target="_blank" title="View CSCO on TradingView">CSCO ↗</a>
+              <span class="score-bar" title="Score: 55/100">██████░░░░ 55/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$112.69</span>
+              <span class="rsi rsi-low">RSI 32.0</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Cisco Systems, Inc. Common Stock (DE)</span>
+            <span class="sector">COMPUTER COMMUNICATIONS E</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span></div>
+          <div class="ma-row">✅ Above MA50+200 &nbsp;|&nbsp; 1M: -10.9% &nbsp;|&nbsp; 3M: +42.6% &nbsp;|&nbsp; 6M: +46.3%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ Above MA50 — medium-term momentum positive</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI oversold at 32.0 — attractive entry territory</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=HPE" target="_blank" title="View HPE on TradingView">HPE ↗</a>
+              <span class="score-bar" title="Score: 55/100">██████░░░░ 55/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$41.23</span>
+              <span class="rsi rsi-low">RSI 32.4</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Hewlett Packard Enterprise Company</span>
+            <span class="sector">COMPUTER & OFFICE EQUIPME</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span></div>
+          <div class="ma-row">✅ Above MA50+200 &nbsp;|&nbsp; 1M: -25.2% &nbsp;|&nbsp; 3M: +67.5% &nbsp;|&nbsp; 6M: +71.6%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ Above MA50 — medium-term momentum positive</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI oversold at 32.4 — attractive entry territory</li><li>⚠️ Sharp 1-month drop -25.2% — verify no fundamental deterioration</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=UPS" target="_blank" title="View UPS on TradingView">UPS ↗</a>
+              <span class="score-bar" title="Score: 54/100">█████░░░░░ 54/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$110.66</span>
+              <span class="rsi rsi-mid">RSI 55.1</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">United Parcel Service, Inc. Class B</span>
+            <span class="sector">TRUCKING & COURIER SERVIC</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 6.0%</span></div>
+          <div class="ma-row">✅ Above MA50+200 &nbsp;|&nbsp; 1M: +1.8% &nbsp;|&nbsp; 3M: +12.7% &nbsp;|&nbsp; 6M: +11.6%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ Above MA50 — medium-term momentum positive</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ MACD bullish crossover — momentum just turned up</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=MAR" target="_blank" title="View MAR on TradingView">MAR ↗</a>
+              <span class="score-bar" title="Score: 53/100">█████░░░░░ 53/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$372.95</span>
+              <span class="rsi rsi-low">RSI 27.4</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Marriott International Class A Common St</span>
+            <span class="sector">HOTELS & MOTELS</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span></div>
+          <div class="ma-row">~ Near MA50 &nbsp;|&nbsp; 1M: -1.0% &nbsp;|&nbsp; 3M: +16.8% &nbsp;|&nbsp; 6M: +20.9%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI deeply oversold at 27.4 — high-probability mean-reversion entry</li><li>✅ MACD histogram expanding — momentum building</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=HAL" target="_blank" title="View HAL on TradingView">HAL ↗</a>
+              <span class="score-bar" title="Score: 53/100">█████░░░░░ 53/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$32.96</span>
+              <span class="rsi rsi-low">RSI 11.5</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Halliburton Company</span>
+            <span class="sector">OIL & GAS FIELD SERVICES,</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 1.7%</span></div>
+          <div class="ma-row">~ Near MA50 &nbsp;|&nbsp; 1M: -19.7% &nbsp;|&nbsp; 3M: -13.6% &nbsp;|&nbsp; 6M: +16.6%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI deeply oversold at 11.5 — high-probability mean-reversion entry</li><li>✅ MACD histogram expanding — momentum building</li><li>⚠️ Sharp 1-month drop -19.7% — verify no fundamental deterioration</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=SJM" target="_blank" title="View SJM on TradingView">SJM ↗</a>
+              <span class="score-bar" title="Score: 53/100">█████░░░░░ 53/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$116.28</span>
+              <span class="rsi rsi-mid">RSI 48.5</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">The J.M. Smucker Company</span>
+            <span class="sector">CANNED, FRUITS, VEG, PRES</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 4.3%</span></div>
+          <div class="ma-row">✅ Above MA50+200 &nbsp;|&nbsp; 1M: +15.7% &nbsp;|&nbsp; 3M: +20.6% &nbsp;|&nbsp; 6M: +17.8%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ Above MA50 — medium-term momentum positive</li><li>✅ MACD bullish crossover — momentum just turned up</li><li>✅ High dividend yield 4.34% — strong income + potential capital gain</li><li>⚠️ Near 52-week high (97%) — assess valuation before entering</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=NOV" target="_blank" title="View NOV on TradingView">NOV ↗</a>
+              <span class="score-bar" title="Score: 53/100">█████░░░░░ 53/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$18.02</span>
+              <span class="rsi rsi-low">RSI 17.2</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">NOV Inc.</span>
+            <span class="sector">OIL & GAS FIELD MACHINERY</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 1.7%</span></div>
+          <div class="ma-row">~ Near MA50 &nbsp;|&nbsp; 1M: -13.4% &nbsp;|&nbsp; 3M: -4.0% &nbsp;|&nbsp; 6M: +15.3%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI deeply oversold at 17.2 — high-probability mean-reversion entry</li><li>✅ MACD histogram expanding — momentum building</li><li>⚠️ Sharp 1-month drop -13.4% — verify no fundamental deterioration</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=XOM" target="_blank" title="View XOM on TradingView">XOM ↗</a>
+              <span class="score-bar" title="Score: 52/100">█████░░░░░ 52/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$137.09</span>
+              <span class="rsi rsi-low">RSI 26.6</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Exxon Mobil Corporation</span>
+            <span class="sector">PETROLEUM REFINING</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 2.7%</span></div>
+          <div class="ma-row">~ Near MA50 &nbsp;|&nbsp; 1M: -10.1% &nbsp;|&nbsp; 3M: -14.7% &nbsp;|&nbsp; 6M: +13.9%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI deeply oversold at 26.6 — high-probability mean-reversion entry</li><li>✅ MACD histogram expanding — momentum building</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=APA" target="_blank" title="View APA on TradingView">APA ↗</a>
+              <span class="score-bar" title="Score: 52/100">█████░░░░░ 52/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$32.36</span>
+              <span class="rsi rsi-low">RSI 23.8</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">APA Corporation Common Stock</span>
+            <span class="sector">CRUDE PETROLEUM & NATURAL</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 2.6%</span></div>
+          <div class="ma-row">~ Near MA50 &nbsp;|&nbsp; 1M: -15.6% &nbsp;|&nbsp; 3M: -23.0% &nbsp;|&nbsp; 6M: +32.3%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI deeply oversold at 23.8 — high-probability mean-reversion entry</li><li>✅ MACD histogram expanding — momentum building</li><li>⚠️ Sharp 1-month drop -15.6% — verify no fundamental deterioration</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=MRVL" target="_blank" title="View MRVL on TradingView">MRVL ↗</a>
+              <span class="score-bar" title="Score: 51/100">█████░░░░░ 51/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$245.29</span>
+              <span class="rsi rsi-mid">RSI 42.3</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Marvell Technology, Inc. Common Stock</span>
+            <span class="sector">SEMICONDUCTORS & RELATED </span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span></div>
+          <div class="ma-row">✅ Above MA50+200 &nbsp;|&nbsp; 1M: -18.7% &nbsp;|&nbsp; 3M: +129.0% &nbsp;|&nbsp; 6M: +188.6%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ Above MA50 — medium-term momentum positive</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI at 42.3 — healthy, significant room to run</li><li>⚠️ Sharp 1-month drop -18.7% — verify no fundamental deterioration</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=BA" target="_blank" title="View BA on TradingView">BA ↗</a>
+              <span class="score-bar" title="Score: 51/100">█████░░░░░ 51/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$226.49</span>
+              <span class="rsi rsi-mid">RSI 55.3</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Boeing Company</span>
+            <span class="sector">AIRCRAFT</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 3.9%</span></div>
+          <div class="ma-row">✅ Above MA50+200 &nbsp;|&nbsp; 1M: +7.6% &nbsp;|&nbsp; 3M: +8.8% &nbsp;|&nbsp; 6M: +4.3%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ Above MA50 — medium-term momentum positive</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ MACD bullish crossover — momentum just turned up</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=PSX" target="_blank" title="View PSX on TradingView">PSX ↗</a>
+              <span class="score-bar" title="Score: 51/100">█████░░░░░ 51/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$176.42</span>
+              <span class="rsi rsi-mid">RSI 47.8</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">PHILLIPS 66</span>
+            <span class="sector">PETROLEUM REFINING</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 2.8%</span></div>
+          <div class="ma-row">✅ Above MA50+200 &nbsp;|&nbsp; 1M: -4.5% &nbsp;|&nbsp; 3M: +0.1% &nbsp;|&nbsp; 6M: +36.7%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ Above MA50 — medium-term momentum positive</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ MACD bullish crossover — momentum just turned up</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=FANG" target="_blank" title="View FANG on TradingView">FANG ↗</a>
+              <span class="score-bar" title="Score: 51/100">█████░░░░░ 51/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$172.04</span>
+              <span class="rsi rsi-low">RSI 18.3</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Diamondback Energy, Inc.</span>
+            <span class="sector">CRUDE PETROLEUM & NATURAL</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 2.1%</span></div>
+          <div class="ma-row">~ Near MA50 &nbsp;|&nbsp; 1M: -18.3% &nbsp;|&nbsp; 3M: -11.3% &nbsp;|&nbsp; 6M: +14.4%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI deeply oversold at 18.3 — high-probability mean-reversion entry</li><li>✅ Below lower Bollinger Band — extreme oversold, strong mean-reversion setup</li><li>⚠️ Sharp 1-month drop -18.3% — verify no fundamental deterioration</li></ul>
+        </div>
+        <div class="stock-card watch">
+          <div class="card-header">
+            <div class="ticker-block">
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=BWA" target="_blank" title="View BWA on TradingView">BWA ↗</a>
+              <span class="score-bar" title="Score: 51/100">█████░░░░░ 51/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$63.52</span>
+              <span class="rsi rsi-low">RSI 19.4</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">BorgWarner Inc.</span>
+            <span class="sector">MOTOR VEHICLE PARTS & ACC</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span></div>
+          <div class="ma-row">~ Near MA50 &nbsp;|&nbsp; 1M: -17.0% &nbsp;|&nbsp; 3M: +20.2% &nbsp;|&nbsp; 6M: +38.9%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI deeply oversold at 19.4 — high-probability mean-reversion entry</li><li>✅ Below lower Bollinger Band — extreme oversold, strong mean-reversion setup</li><li>⚠️ Sharp 1-month drop -17.0% — verify no fundamental deterioration</li></ul>
+        </div></div>
+        </section>
+  
+  
+        <section>
+          <h2>⛔ Avoid / Weak <span class="count">(165)</span></h2>
+          <div class="card-grid">
+        <div class="stock-card avoid">
+          <div class="card-header">
+            <div class="ticker-block">
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=NOW" target="_blank" title="View NOW on TradingView">NOW ↗</a>
+              <span class="score-bar" title="Score: 27/100">███░░░░░░░ 27/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$106.32</span>
+              <span class="rsi rsi-mid">RSI 53.9</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">SERVICENOW, INC.</span>
+            <span class="sector">SERVICES-PREPACKAGED SOFT</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span></div>
+          <div class="ma-row">📉 Below MA200 &nbsp;|&nbsp; 1M: -9.8% &nbsp;|&nbsp; 3M: +4.2% &nbsp;|&nbsp; 6M: -30.6%</div>
+          
+          <ul class="signals"><li>✅ Above MA50 — medium-term momentum positive</li><li>✅ MACD bullish crossover — momentum just turned up</li><li>✅ Lower 52-week range (21%) — attractive entry vs recent history</li><li>⚠️ Below MA200 — long-term downtrend, caution on new entries</li></ul>
+        </div>
+        <div class="stock-card avoid">
+          <div class="card-header">
+            <div class="ticker-block">
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=CEG" target="_blank" title="View CEG on TradingView">CEG ↗</a>
+              <span class="score-bar" title="Score: 27/100">███░░░░░░░ 27/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$239.25</span>
+              <span class="rsi rsi-mid">RSI 44.9</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Constellation Energy Corporation Common </span>
+            <span class="sector">ELECTRIC SERVICES</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span></div>
+          <div class="ma-row">📉 Below MA200 &nbsp;|&nbsp; 1M: -10.5% &nbsp;|&nbsp; 3M: -12.3% &nbsp;|&nbsp; 6M: -32.3%</div>
+          
+          <ul class="signals"><li>✅ RSI at 44.9 — healthy, significant room to run</li><li>✅ Below lower Bollinger Band — extreme oversold, strong mean-reversion setup</li><li>✅ Near 52-week low (2% of annual range) — deep value zone</li><li>⚠️ Below MA200 — long-term downtrend, caution on new entries</li></ul>
+        </div>
+        <div class="stock-card avoid">
+          <div class="card-header">
+            <div class="ticker-block">
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=SNPS" target="_blank" title="View SNPS on TradingView">SNPS ↗</a>
+              <span class="score-bar" title="Score: 27/100">███░░░░░░░ 27/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$437.16</span>
+              <span class="rsi rsi-mid">RSI 39.0</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Synopsys Inc</span>
+            <span class="sector">SERVICES-PREPACKAGED SOFT</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span></div>
+          <div class="ma-row">📉 Below MA200 &nbsp;|&nbsp; 1M: -12.2% &nbsp;|&nbsp; 3M: +10.3% &nbsp;|&nbsp; 6M: -5.7%</div>
+          
+          <ul class="signals"><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ RSI at 39.0 — healthy, significant room to run</li><li>✅ Below lower Bollinger Band — extreme oversold, strong mean-reversion setup</li><li>✅ Lower 52-week range (22%) — attractive entry vs recent history</li><li>⚠️ Below MA200 — long-term downtrend, caution on new entries</li><li>⚠️ Sharp 1-month drop -12.2% — verify no fundamental deterioration</li></ul>
+        </div>
+        <div class="stock-card avoid">
+          <div class="card-header">
+            <div class="ticker-block">
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=CTAS" target="_blank" title="View CTAS on TradingView">CTAS ↗</a>
+              <span class="score-bar" title="Score: 27/100">███░░░░░░░ 27/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$181.37</span>
+              <span class="rsi rsi-mid">RSI 49.4</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Cintas Corp</span>
+            <span class="sector">MEN'S & BOYS' FURNISHGS, </span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span></div>
+          <div class="ma-row">📉 Below MA200 &nbsp;|&nbsp; 1M: +3.8% &nbsp;|&nbsp; 3M: +4.0% &nbsp;|&nbsp; 6M: -5.5%</div>
+          
+          <ul class="signals"><li>✅ Above MA50 — medium-term momentum positive</li><li>✅ MACD bullish crossover — momentum just turned up</li><li>✅ Lower 52-week range (28%) — attractive entry vs recent history</li><li>⚠️ Below MA200 — long-term downtrend, caution on new entries</li></ul>
+        </div>
+        <div class="stock-card avoid">
+          <div class="card-header">
+            <div class="ticker-block">
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=EXC" target="_blank" title="View EXC on TradingView">EXC ↗</a>
+              <span class="score-bar" title="Score: 27/100">███░░░░░░░ 27/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$47.88</span>
+              <span class="rsi rsi-mid">RSI 66.8</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Exelon Corporation</span>
+            <span class="sector">ELECTRIC & OTHER SERVICES</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 3.7%</span></div>
+          <div class="ma-row">✅ Above MA50+200 &nbsp;|&nbsp; 1M: +6.2% &nbsp;|&nbsp; 3M: -2.9% &nbsp;|&nbsp; 6M: +9.8%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ Above MA50 — medium-term momentum positive</li><li>✅ MACD histogram expanding — momentum building</li><li>✅ Solid dividend yield 3.73% — meaningful income cushion</li><li>⚠️ Near upper Bollinger Band (101%) — extended, avoid chasing</li></ul>
+        </div>
+        <div class="stock-card avoid">
+          <div class="card-header">
+            <div class="ticker-block">
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=AIG" target="_blank" title="View AIG on TradingView">AIG ↗</a>
+              <span class="score-bar" title="Score: 27/100">███░░░░░░░ 27/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$79.39</span>
+              <span class="rsi rsi-mid">RSI 65.0</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">American International Group, Inc.</span>
+            <span class="sector">FIRE, MARINE & CASUALTY I</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 2.8%</span></div>
+          <div class="ma-row">✅ Above MA50+200 &nbsp;|&nbsp; 1M: +9.4% &nbsp;|&nbsp; 3M: +5.3% &nbsp;|&nbsp; 6M: -7.2%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ Above MA50 — medium-term momentum positive</li><li>✅ MACD histogram expanding — momentum building</li><li>✅ Solid dividend yield 2.76% — meaningful income cushion</li><li>⚠️ Near upper Bollinger Band (128%) — extended, avoid chasing</li></ul>
+        </div>
+        <div class="stock-card avoid">
+          <div class="card-header">
+            <div class="ticker-block">
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=HBAN" target="_blank" title="View HBAN on TradingView">HBAN ↗</a>
+              <span class="score-bar" title="Score: 27/100">███░░░░░░░ 27/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$17.86</span>
+              <span class="rsi rsi-mid">RSI 60.5</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Huntington Bancshares Inc</span>
+            <span class="sector">NATIONAL COMMERCIAL BANKS</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 3.9%</span></div>
+          <div class="ma-row">✅ Above MA50+200 &nbsp;|&nbsp; 1M: +12.1% &nbsp;|&nbsp; 3M: +13.1% &nbsp;|&nbsp; 6M: +2.9%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ Above MA50 — medium-term momentum positive</li><li>✅ Solid dividend yield 3.89% — meaningful income cushion</li></ul>
+        </div>
+        <div class="stock-card avoid">
+          <div class="card-header">
+            <div class="ticker-block">
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=KVUE" target="_blank" title="View KVUE on TradingView">KVUE ↗</a>
+              <span class="score-bar" title="Score: 27/100">███░░░░░░░ 27/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$19.83</span>
+              <span class="rsi rsi-high">RSI 77.2</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Kenvue Inc.</span>
+            <span class="sector">PERFUMES, COSMETICS & OTH</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 4.9%</span></div>
+          <div class="ma-row">✅ Above MA50+200 &nbsp;|&nbsp; 1M: +17.8% &nbsp;|&nbsp; 3M: +15.7% &nbsp;|&nbsp; 6M: +15.0%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ Above MA50 — medium-term momentum positive</li><li>✅ MA50 > MA200 — bullish trend alignment</li><li>✅ MACD histogram expanding — momentum building</li><li>⚠️ RSI overbought at 77.2 — wait for pullback before entering</li><li>⚠️ Near upper Bollinger Band (101%) — extended, avoid chasing</li></ul>
+        </div>
+        <div class="stock-card avoid">
+          <div class="card-header">
+            <div class="ticker-block">
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=HD" target="_blank" title="View HD on TradingView">HD ↗</a>
+              <span class="score-bar" title="Score: 26/100">███░░░░░░░ 26/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$357.90</span>
+              <span class="rsi rsi-high">RSI 71.4</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">Home Depot, Inc.</span>
+            <span class="sector">RETAIL-LUMBER & OTHER BUI</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 3.0%</span></div>
+          <div class="ma-row">✅ Above MA50+200 &nbsp;|&nbsp; 1M: +14.4% &nbsp;|&nbsp; 3M: +11.3% &nbsp;|&nbsp; 6M: +4.0%</div>
+          
+          <ul class="signals"><li>✅ Above MA200 — long-term uptrend intact</li><li>✅ Above MA50 — medium-term momentum positive</li><li>✅ MACD histogram expanding — momentum building</li><li>✅ Solid dividend yield 2.98% — meaningful income cushion</li><li>⚠️ RSI elevated at 71.4 — stretched, monitor for reversal</li></ul>
+        </div>
+        <div class="stock-card avoid">
+          <div class="card-header">
+            <div class="ticker-block">
+              <a class="ticker" href="https://www.tradingview.com/chart/?symbol=MCD" target="_blank" title="View MCD on TradingView">MCD ↗</a>
+              <span class="score-bar" title="Score: 26/100">███░░░░░░░ 26/100</span>
+            </div>
+            <div class="price-block">
+              <span class="price">$280.63</span>
+              <span class="rsi rsi-mid">RSI 46.4</span>
+            </div>
+          </div>
+          <div class="meta-row">
+            <span class="name">McDonald's Corporation</span>
+            <span class="sector">RETAIL-EATING PLACES</span>
+          </div>
+          <div class="badge-row"><span class="badge golden">🌟 Golden Cross</span><span class="badge death">💀 Death Cross</span><span class="badge div">Div 2.7%</span></div>
+          <div class="ma-row">📉 Below MA200 &nbsp;|&nbsp; 1M: +2.7% &nbsp;|&nbsp; 3M: -8.6% &nbsp;|&nbsp; 6M: -8.2%</div>
+          
+          <ul class="signals"><li>✅ MACD bullish crossover — momentum just turned up</li><li>✅ Lower 52-week range (21%) — attractive entry vs recent history</li><li>✅ Solid dividend yield 2.72% — meaningful income cushion</li><li>⚠️ Below MA200 — long-term downtrend, caution on new entries</li></ul>
+        </div></div>
+        </section>
+  
+    <section>
+      <h2>💰 Dividend Income — Long-Term Holds</h2>
+      <p class="section-note">
+        Stocks above MA200 (price stability), yield ≥ 2%, consistent dividend history.
+        Best suited for buy-and-hold income investing. Sort: yield high to low.
+      </p>
+      <div class="table-wrap">
+      <table class="pos-table">
+        <thead><tr>
+          <th>Ticker</th><th>Company</th><th>Sector</th>
+          <th>Yield</th><th>Annual $</th><th>Streak</th>
+          <th>Price</th><th>Above MA200</th><th>Signal</th><th>Score</th>
+          <th>RSI</th><th>3M Perf</th>
+        </tr></thead>
+        <tbody>
+        <tr>
+          <td><a href="https://www.tradingview.com/chart/?symbol=PK" target="_blank"
+              style="color:var(--blue);font-weight:700;text-decoration:none">PK ↗</a></td>
+          <td style="color:var(--muted);font-size:12px">Park Hotels & Resorts Inc. Commo</td>
+          <td style="color:var(--muted);font-size:11px">HOTELS & MOTELS</td>
+          <td style="color:var(--green);font-weight:700">7.4%</td>
+          <td style="color:var(--muted)">$1.00</td>
+          <td title="Consecutive dividend records">8+ qtrs</td>
+          <td>$14.42</td>
+          <td>✅</td>
+          <td style="color:var(--yellow);font-weight:600">WATCH</td>
+          <td style="color:var(--muted)">50/100</td>
+          <td>51.1</td>
+          <td style="color:var(--green)">+38.7%</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.tradingview.com/chart/?symbol=KHC" target="_blank"
+              style="color:var(--blue);font-weight:700;text-decoration:none">KHC ↗</a></td>
+          <td style="color:var(--muted);font-size:12px">The Kraft Heinz Company Common S</td>
+          <td style="color:var(--muted);font-size:11px">CANNED, FROZEN & PRESE</td>
+          <td style="color:var(--green);font-weight:700">7.0%</td>
+          <td style="color:var(--muted)">$1.60</td>
+          <td title="Consecutive dividend records">8+ qtrs</td>
+          <td>$25.37</td>
+          <td>✅</td>
+          <td style="color:var(--muted);font-weight:600">HOLD</td>
+          <td style="color:var(--muted)">35/100</td>
+          <td>58.2</td>
+          <td style="color:var(--green)">+11.3%</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.tradingview.com/chart/?symbol=DOC" target="_blank"
+              style="color:var(--blue);font-weight:700;text-decoration:none">DOC ↗</a></td>
+          <td style="color:var(--muted);font-size:12px">Healthpeak Properties, Inc.</td>
+          <td style="color:var(--muted);font-size:11px">REAL ESTATE INVESTMENT</td>
+          <td style="color:var(--green);font-weight:700">6.4%</td>
+          <td style="color:var(--muted)">$1.22</td>
+          <td title="Consecutive dividend records">8+ qtrs</td>
+          <td>$21.89</td>
+          <td>✅</td>
+          <td style="color:var(--yellow);font-weight:600">WATCH</td>
+          <td style="color:var(--muted)">45/100</td>
+          <td>64.2</td>
+          <td style="color:var(--green)">+32.5%</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.tradingview.com/chart/?symbol=APLE" target="_blank"
+              style="color:var(--blue);font-weight:700;text-decoration:none">APLE ↗</a></td>
+          <td style="color:var(--muted);font-size:12px">Apple Hospitality REIT, Inc.</td>
+          <td style="color:var(--muted);font-size:11px">REAL ESTATE INVESTMENT</td>
+          <td style="color:var(--green);font-weight:700">6.3%</td>
+          <td style="color:var(--muted)">$0.96</td>
+          <td title="Consecutive dividend records">8+ qtrs</td>
+          <td>$16.64</td>
+          <td>✅</td>
+          <td style="color:var(--muted);font-weight:600">HOLD</td>
+          <td style="color:var(--muted)">39/100</td>
+          <td>62.0</td>
+          <td style="color:var(--green)">+44.3%</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.tradingview.com/chart/?symbol=UPS" target="_blank"
+              style="color:var(--blue);font-weight:700;text-decoration:none">UPS ↗</a></td>
+          <td style="color:var(--muted);font-size:12px">United Parcel Service, Inc. Clas</td>
+          <td style="color:var(--muted);font-size:11px">TRUCKING & COURIER SER</td>
+          <td style="color:var(--green);font-weight:700">6.0%</td>
+          <td style="color:var(--muted)">$6.56</td>
+          <td title="Consecutive dividend records">8+ qtrs</td>
+          <td>$110.66</td>
+          <td>✅</td>
+          <td style="color:var(--yellow);font-weight:600">WATCH</td>
+          <td style="color:var(--muted)">54/100</td>
+          <td>55.1</td>
+          <td style="color:var(--green)">+12.7%</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.tradingview.com/chart/?symbol=MO" target="_blank"
+              style="color:var(--blue);font-weight:700;text-decoration:none">MO ↗</a></td>
+          <td style="color:var(--muted);font-size:12px">Altria Group, Inc.</td>
+          <td style="color:var(--muted);font-size:11px">CIGARETTES</td>
+          <td style="color:var(--green);font-weight:700">6.0%</td>
+          <td style="color:var(--muted)">$4.24</td>
+          <td title="Consecutive dividend records">8+ qtrs</td>
+          <td>$72.71</td>
+          <td>✅</td>
+          <td style="color:var(--muted);font-weight:600">HOLD</td>
+          <td style="color:var(--muted)">40/100</td>
+          <td>54.8</td>
+          <td style="color:var(--green)">+10.6%</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.tradingview.com/chart/?symbol=PRU" target="_blank"
+              style="color:var(--blue);font-weight:700;text-decoration:none">PRU ↗</a></td>
+          <td style="color:var(--muted);font-size:12px">Prudential Financial, Inc.</td>
+          <td style="color:var(--muted);font-size:11px">LIFE INSURANCE</td>
+          <td style="color:var(--green);font-weight:700">5.6%</td>
+          <td style="color:var(--muted)">$5.60</td>
+          <td title="Consecutive dividend records">8+ qtrs</td>
+          <td>$112.95</td>
+          <td>✅</td>
+          <td style="color:var(--muted);font-weight:600">HOLD</td>
+          <td style="color:var(--muted)">34/100</td>
+          <td>67.2</td>
+          <td style="color:var(--green)">+15.8%</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.tradingview.com/chart/?symbol=O" target="_blank"
+              style="color:var(--blue);font-weight:700;text-decoration:none">O ↗</a></td>
+          <td style="color:var(--muted);font-size:12px">Realty Income Corporation</td>
+          <td style="color:var(--muted);font-size:11px">REAL ESTATE INVESTMENT</td>
+          <td style="color:var(--green);font-weight:700">5.4%</td>
+          <td style="color:var(--muted)">$3.25</td>
+          <td title="Consecutive dividend records">8+ qtrs</td>
+          <td>$63.84</td>
+          <td>✅</td>
+          <td style="color:var(--muted);font-weight:600">HOLD</td>
+          <td style="color:var(--muted)">35/100</td>
+          <td>60.1</td>
+          <td style="color:var(--green)">+2.6%</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.tradingview.com/chart/?symbol=BBY" target="_blank"
+              style="color:var(--blue);font-weight:700;text-decoration:none">BBY ↗</a></td>
+          <td style="color:var(--muted);font-size:12px">Best Buy Company, Inc.</td>
+          <td style="color:var(--muted);font-size:11px">RETAIL-RADIO, TV & CON</td>
+          <td style="color:var(--green);font-weight:700">5.3%</td>
+          <td style="color:var(--muted)">$3.84</td>
+          <td title="Consecutive dividend records">8+ qtrs</td>
+          <td>$77.99</td>
+          <td>✅</td>
+          <td style="color:var(--yellow);font-weight:600">WATCH</td>
+          <td style="color:var(--muted)">45/100</td>
+          <td>52.4</td>
+          <td style="color:var(--green)">+20.9%</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.tradingview.com/chart/?symbol=COLB" target="_blank"
+              style="color:var(--blue);font-weight:700;text-decoration:none">COLB ↗</a></td>
+          <td style="color:var(--muted);font-size:12px">Columbia Banking Systems Inc</td>
+          <td style="color:var(--muted);font-size:11px">STATE COMMERCIAL BANKS</td>
+          <td style="color:var(--green);font-weight:700">5.2%</td>
+          <td style="color:var(--muted)">$1.48</td>
+          <td title="Consecutive dividend records">8+ qtrs</td>
+          <td>$31.72</td>
+          <td>✅</td>
+          <td style="color:var(--muted);font-weight:600">HOLD</td>
+          <td style="color:var(--muted)">40/100</td>
+          <td>58.5</td>
+          <td style="color:var(--green)">+14.4%</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.tradingview.com/chart/?symbol=HRL" target="_blank"
+              style="color:var(--blue);font-weight:700;text-decoration:none">HRL ↗</a></td>
+          <td style="color:var(--muted);font-size:12px">Hormel Foods Corporation</td>
+          <td style="color:var(--muted);font-size:11px">MEAT PACKING PLANTS</td>
+          <td style="color:var(--green);font-weight:700">5.1%</td>
+          <td style="color:var(--muted)">$1.17</td>
+          <td title="Consecutive dividend records">8+ qtrs</td>
+          <td>$25.00</td>
+          <td>✅</td>
+          <td style="color:var(--muted);font-weight:600">HOLD</td>
+          <td style="color:var(--muted)">35/100</td>
+          <td>55.2</td>
+          <td style="color:var(--green)">+13.2%</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.tradingview.com/chart/?symbol=TROW" target="_blank"
+              style="color:var(--blue);font-weight:700;text-decoration:none">TROW ↗</a></td>
+          <td style="color:var(--muted);font-size:12px">T Rowe Price Group Inc</td>
+          <td style="color:var(--muted);font-size:11px">INVESTMENT ADVICE</td>
+          <td style="color:var(--green);font-weight:700">5.0%</td>
+          <td style="color:var(--muted)">$5.20</td>
+          <td title="Consecutive dividend records">8+ qtrs</td>
+          <td>$118.55</td>
+          <td>✅</td>
+          <td style="color:var(--muted);font-weight:600">HOLD</td>
+          <td style="color:var(--muted)">32/100</td>
+          <td>73.5</td>
+          <td style="color:var(--green)">+31.5%</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.tradingview.com/chart/?symbol=HR" target="_blank"
+              style="color:var(--blue);font-weight:700;text-decoration:none">HR ↗</a></td>
+          <td style="color:var(--muted);font-size:12px">Healthcare Realty Trust Incorpor</td>
+          <td style="color:var(--muted);font-size:11px">REAL ESTATE INVESTMENT</td>
+          <td style="color:var(--green);font-weight:700">5.0%</td>
+          <td style="color:var(--muted)">$0.96</td>
+          <td title="Consecutive dividend records">8+ qtrs</td>
+          <td>$20.61</td>
+          <td>✅</td>
+          <td style="color:var(--yellow);font-weight:600">WATCH</td>
+          <td style="color:var(--muted)">50/100</td>
+          <td>51.8</td>
+          <td style="color:var(--green)">+18.4%</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.tradingview.com/chart/?symbol=EIX" target="_blank"
+              style="color:var(--blue);font-weight:700;text-decoration:none">EIX ↗</a></td>
+          <td style="color:var(--muted);font-size:12px">Edison International</td>
+          <td style="color:var(--muted);font-size:11px">ELECTRIC SERVICES</td>
+          <td style="color:var(--green);font-weight:700">5.0%</td>
+          <td style="color:var(--muted)">$3.51</td>
+          <td title="Consecutive dividend records">8+ qtrs</td>
+          <td>$75.66</td>
+          <td>✅</td>
+          <td style="color:var(--muted);font-weight:600">HOLD</td>
+          <td style="color:var(--muted)">41/100</td>
+          <td>64.1</td>
+          <td style="color:var(--green)">+3.0%</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.tradingview.com/chart/?symbol=OKE" target="_blank"
+              style="color:var(--blue);font-weight:700;text-decoration:none">OKE ↗</a></td>
+          <td style="color:var(--muted);font-size:12px">Oneok, Inc.</td>
+          <td style="color:var(--muted);font-size:11px">NATURAL GAS TRANSMISSI</td>
+          <td style="color:var(--green);font-weight:700">4.9%</td>
+          <td style="color:var(--muted)">$4.28</td>
+          <td title="Consecutive dividend records">8+ qtrs</td>
+          <td>$87.83</td>
+          <td>✅</td>
+          <td style="color:var(--muted);font-weight:600">HOLD</td>
+          <td style="color:var(--muted)">38/100</td>
+          <td>46.4</td>
+          <td style="color:var(--red)">-0.5%</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.tradingview.com/chart/?symbol=KVUE" target="_blank"
+              style="color:var(--blue);font-weight:700;text-decoration:none">KVUE ↗</a></td>
+          <td style="color:var(--muted);font-size:12px">Kenvue Inc.</td>
+          <td style="color:var(--muted);font-size:11px">PERFUMES, COSMETICS & </td>
+          <td style="color:var(--green);font-weight:700">4.9%</td>
+          <td style="color:var(--muted)">$0.83</td>
+          <td title="Consecutive dividend records">8+ qtrs</td>
+          <td>$19.83</td>
+          <td>✅</td>
+          <td style="color:var(--red);font-weight:600">AVOID</td>
+          <td style="color:var(--muted)">27/100</td>
+          <td>77.2</td>
+          <td style="color:var(--green)">+15.7%</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.tradingview.com/chart/?symbol=PAYX" target="_blank"
+              style="color:var(--blue);font-weight:700;text-decoration:none">PAYX ↗</a></td>
+          <td style="color:var(--muted);font-size:12px">Paychex Inc</td>
+          <td style="color:var(--muted);font-size:11px">SERVICES-ENGINEERING, </td>
+          <td style="color:var(--green);font-weight:700">4.8%</td>
+          <td style="color:var(--muted)">$4.76</td>
+          <td title="Consecutive dividend records">8+ qtrs</td>
+          <td>$106.35</td>
+          <td>✅</td>
+          <td style="color:var(--muted);font-weight:600">HOLD</td>
+          <td style="color:var(--muted)">34/100</td>
+          <td>64.2</td>
+          <td style="color:var(--green)">+16.0%</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.tradingview.com/chart/?symbol=AES" target="_blank"
+              style="color:var(--blue);font-weight:700;text-decoration:none">AES ↗</a></td>
+          <td style="color:var(--muted);font-size:12px">AES Corporation</td>
+          <td style="color:var(--muted);font-size:11px">COGENERATION SERVICES </td>
+          <td style="color:var(--green);font-weight:700">4.8%</td>
+          <td style="color:var(--muted)">$0.70</td>
+          <td title="Consecutive dividend records">8+ qtrs</td>
+          <td>$14.58</td>
+          <td>✅</td>
+          <td style="color:var(--yellow);font-weight:600">WATCH</td>
+          <td style="color:var(--muted)">66/100</td>
+          <td>37.8</td>
+          <td style="color:var(--green)">+2.0%</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.tradingview.com/chart/?symbol=UDR" target="_blank"
+              style="color:var(--blue);font-weight:700;text-decoration:none">UDR ↗</a></td>
+          <td style="color:var(--muted);font-size:12px">UDR, Inc.</td>
+          <td style="color:var(--muted);font-size:11px">REAL ESTATE INVESTMENT</td>
+          <td style="color:var(--green);font-weight:700">4.6%</td>
+          <td style="color:var(--muted)">$1.74</td>
+          <td title="Consecutive dividend records">8+ qtrs</td>
+          <td>$41.09</td>
+          <td>✅</td>
+          <td style="color:var(--muted);font-weight:600">HOLD</td>
+          <td style="color:var(--muted)">39/100</td>
+          <td>66.3</td>
+          <td style="color:var(--green)">+18.6%</td>
+        </tr>
+        <tr>
+          <td><a href="https://www.tradingview.com/chart/?symbol=BMY" target="_blank"
+              style="color:var(--blue);font-weight:700;text-decoration:none">BMY ↗</a></td>
+          <td style="color:var(--muted);font-size:12px">Bristol-Myers Squibb Co.</td>
+          <td style="color:var(--muted);font-size:11px">PHARMACEUTICAL PREPARA</td>
+          <td style="color:var(--green);font-weight:700">4.6%</td>
+          <td style="color:var(--muted)">$2.52</td>
+          <td title="Consecutive dividend records">8+ qtrs</td>
+          <td>$58.13</td>
+          <td>✅</td>
+          <td style="color:var(--yellow);font-weight:600">WATCH</td>
+          <td style="color:var(--muted)">46/100</td>
+          <td>54.8</td>
+          <td style="color:var(--red)">-2.5%</td>
+        </tr></tbody>
+      </table>
+      </div>
+      <p style="color:var(--muted);font-size:11px;margin-top:8px">
+        ⚠️ High yield can signal distress — always verify payout ratio and earnings coverage.
+        100 qualifying stocks found; showing top 20.
+      </p>
+    </section>
+  
+    <section>
+      <h2>🤖 AI Infrastructure Watchlist</h2>
+      <p class="section-note">
+        High-growth theme: chips, datacenters, power, optics, cooling, and AI software —
+        the build-out ecosystem for the AI supercycle. Monitor for entries on pullbacks.
+      </p>
+      <style>
+        .ai-theme { margin-bottom: 24px; }
+        .ai-theme h3 { font-size: 14px; color: var(--purple); margin-bottom: 8px;
+                        font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
+      </style>
+      
+        <div class="ai-theme">
+          <h3>Chips & Silicon</h3>
+          <div class="table-wrap">
+          <table class="pos-table">
+            <thead><tr>
+              <th>Ticker</th><th>Company</th><th>Signal</th><th>Score</th>
+              <th>Price</th><th>MA50+200</th><th>RSI</th><th>3M Perf</th>
+            </tr></thead>
+            <tbody>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=MRVL" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">MRVL ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Marvell Technology, Inc. Common </td>
+              <td style="color:var(--yellow);font-weight:600">WATCH</td>
+              <td>51/100</td>
+              <td>$245.29</td>
+              <td>✅</td>
+              <td>42.3</td>
+              <td style="color:var(--green)">+129.0%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=MCHP" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">MCHP ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Microchip Technology Inc</td>
+              <td style="color:var(--yellow);font-weight:600">WATCH</td>
+              <td>47/100</td>
+              <td>$84.64</td>
+              <td>❌</td>
+              <td>41.7</td>
+              <td style="color:var(--green)">+29.0%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=ON" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">ON ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">ON Semiconductor Corp</td>
+              <td style="color:var(--yellow);font-weight:600">WATCH</td>
+              <td>45/100</td>
+              <td>$91.22</td>
+              <td>❌</td>
+              <td>37.6</td>
+              <td style="color:var(--green)">+46.7%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=QCOM" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">QCOM ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Qualcomm Inc</td>
+              <td style="color:var(--yellow);font-weight:600">WATCH</td>
+              <td>43/100</td>
+              <td>$176.25</td>
+              <td>❌</td>
+              <td>37.1</td>
+              <td style="color:var(--green)">+39.0%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=NXPI" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">NXPI ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">NXP Semiconductors N.V.</td>
+              <td style="color:var(--yellow);font-weight:600">WATCH</td>
+              <td>43/100</td>
+              <td>$273.36</td>
+              <td>❌</td>
+              <td>38.1</td>
+              <td style="color:var(--green)">+40.5%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=ADI" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">ADI ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Analog Devices, Inc.</td>
+              <td style="color:var(--yellow);font-weight:600">WATCH</td>
+              <td>43/100</td>
+              <td>$377.16</td>
+              <td>❌</td>
+              <td>39.7</td>
+              <td style="color:var(--green)">+18.5%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=NVDA" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">NVDA ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Nvidia Corp</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>41/100</td>
+              <td>$194.83</td>
+              <td>❌</td>
+              <td>40.4</td>
+              <td style="color:var(--green)">+9.8%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=ASML" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">ASML ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">ASML Holding NV</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>39/100</td>
+              <td>$1,769.32</td>
+              <td>✅</td>
+              <td>43.4</td>
+              <td style="color:var(--green)">+34.0%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=KLAC" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">KLAC ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">KLA Corp</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>38/100</td>
+              <td>$235.55</td>
+              <td>❌</td>
+              <td>5.0</td>
+              <td style="color:var(--red)">-86.9%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=AMD" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">AMD ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Advanced Micro Devices</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>34/100</td>
+              <td>$517.82</td>
+              <td>✅</td>
+              <td>54.6</td>
+              <td style="color:var(--green)">+138.1%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=AMAT" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">AMAT ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Applied Materials Inc</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>34/100</td>
+              <td>$603.04</td>
+              <td>✅</td>
+              <td>54.9</td>
+              <td style="color:var(--green)">+73.1%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=MU" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">MU ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Micron Technology, Inc.</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>34/100</td>
+              <td>$975.56</td>
+              <td>✅</td>
+              <td>49.0</td>
+              <td style="color:var(--green)">+166.4%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=INTC" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">INTC ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Intel Corp</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>34/100</td>
+              <td>$120.35</td>
+              <td>✅</td>
+              <td>51.9</td>
+              <td style="color:var(--green)">+138.9%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=MPWR" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">MPWR ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">Monolithic Power</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>34/100</td>
+              <td>$1,288.16</td>
+              <td>❌</td>
+              <td>36.2</td>
+              <td style="color:var(--red)">-8.2%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=TXN" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">TXN ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Texas Instruments Incorporated</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>30/100</td>
+              <td>$293.08</td>
+              <td>❌</td>
+              <td>48.6</td>
+              <td style="color:var(--green)">+50.4%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=SMCI" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">SMCI ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Super Micro Computer, Inc. Commo</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>29/100</td>
+              <td>$27.22</td>
+              <td>❌</td>
+              <td>39.8</td>
+              <td style="color:var(--green)">+17.2%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=ARM" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">ARM ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">Arm Holdings</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>29/100</td>
+              <td>$315.28</td>
+              <td>❌</td>
+              <td>48.5</td>
+              <td style="color:var(--green)">+97.9%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=LRCX" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">LRCX ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Lam Research Corp</td>
+              <td style="color:var(--red);font-weight:600">AVOID</td>
+              <td>24/100</td>
+              <td>$351.41</td>
+              <td>✅</td>
+              <td>48.2</td>
+              <td style="color:var(--green)">+60.9%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=AVGO" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">AVGO ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Broadcom Inc. Common Stock</td>
+              <td style="color:var(--red);font-weight:600">AVOID</td>
+              <td>22/100</td>
+              <td>$360.45</td>
+              <td>❌</td>
+              <td>41.5</td>
+              <td style="color:var(--green)">+14.6%</td>
+            </tr></tbody>
+          </table>
+          </div>
+        </div>
+        <div class="ai-theme">
+          <h3>Datacenter & Cloud</h3>
+          <div class="table-wrap">
+          <table class="pos-table">
+            <thead><tr>
+              <th>Ticker</th><th>Company</th><th>Signal</th><th>Score</th>
+              <th>Price</th><th>MA50+200</th><th>RSI</th><th>3M Perf</th>
+            </tr></thead>
+            <tbody>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=SNOW" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">SNOW ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Snowflake</td>
+              <td style="color:var(--yellow);font-weight:600">WATCH</td>
+              <td>46/100</td>
+              <td>$260.15</td>
+              <td>✅</td>
+              <td>63.2</td>
+              <td style="color:var(--green)">+92.0%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=GOOGL" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">GOOGL ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Alphabet Inc. Class A Common Sto</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>40/100</td>
+              <td>$359.91</td>
+              <td>❌</td>
+              <td>51.3</td>
+              <td style="color:var(--green)">+21.7%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=ORCL" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">ORCL ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Oracle Corp</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>37/100</td>
+              <td>$140.27</td>
+              <td>❌</td>
+              <td>14.9</td>
+              <td style="color:var(--red)">-4.2%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=AMZN" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">AMZN ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Amazon.Com Inc</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>32/100</td>
+              <td>$242.67</td>
+              <td>❌</td>
+              <td>50.9</td>
+              <td style="color:var(--green)">+15.7%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=WDAY" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">WDAY ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Workday, Inc. Class A Common Sto</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>32/100</td>
+              <td>$135.40</td>
+              <td>❌</td>
+              <td>54.6</td>
+              <td style="color:var(--green)">+2.4%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=NOW" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">NOW ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">SERVICENOW, INC.</td>
+              <td style="color:var(--red);font-weight:600">AVOID</td>
+              <td>27/100</td>
+              <td>$106.32</td>
+              <td>❌</td>
+              <td>53.9</td>
+              <td style="color:var(--green)">+4.2%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=MSFT" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">MSFT ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Microsoft Corp</td>
+              <td style="color:var(--red);font-weight:600">AVOID</td>
+              <td>19/100</td>
+              <td>$390.49</td>
+              <td>❌</td>
+              <td>50.1</td>
+              <td style="color:var(--green)">+4.6%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=PANW" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">PANW ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Palo Alto Networks, Inc. Common </td>
+              <td style="color:var(--red);font-weight:600">AVOID</td>
+              <td>17/100</td>
+              <td>$348.06</td>
+              <td>✅</td>
+              <td>84.3</td>
+              <td style="color:var(--green)">+113.3%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=CRM" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">CRM ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Salesforce, Inc.</td>
+              <td style="color:var(--red);font-weight:600">AVOID</td>
+              <td>16/100</td>
+              <td>$166.11</td>
+              <td>❌</td>
+              <td>49.6</td>
+              <td style="color:var(--red)">-11.3%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=META" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">META ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Meta Platforms, Inc. Class A Com</td>
+              <td style="color:var(--red);font-weight:600">AVOID</td>
+              <td>11/100</td>
+              <td>$582.90</td>
+              <td>❌</td>
+              <td>53.4</td>
+              <td style="color:var(--green)">+1.5%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=ZS" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">ZS ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Zscaler, Inc. Common Stock</td>
+              <td style="color:var(--red);font-weight:600">AVOID</td>
+              <td>1/100</td>
+              <td>$147.33</td>
+              <td>❌</td>
+              <td>75.4</td>
+              <td style="color:var(--green)">+6.3%</td>
+            </tr></tbody>
+          </table>
+          </div>
+        </div>
+        <div class="ai-theme">
+          <h3>Pure-Play AI & New Entrants</h3>
+          <div class="table-wrap">
+          <table class="pos-table">
+            <thead><tr>
+              <th>Ticker</th><th>Company</th><th>Signal</th><th>Score</th>
+              <th>Price</th><th>MA50+200</th><th>RSI</th><th>3M Perf</th>
+            </tr></thead>
+            <tbody>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=CORZ" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">CORZ ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">Core Scientific</td>
+              <td style="color:var(--yellow);font-weight:600">WATCH</td>
+              <td>47/100</td>
+              <td>$21.43</td>
+              <td>❌</td>
+              <td>31.2</td>
+              <td style="color:var(--green)">+12.3%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=WULF" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">WULF ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">TeraWulf</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>38/100</td>
+              <td>$21.18</td>
+              <td>❌</td>
+              <td>34.2</td>
+              <td style="color:var(--green)">+2.6%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=AI" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">AI ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">C3.ai</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>36/100</td>
+              <td>$9.06</td>
+              <td>❌</td>
+              <td>26.3</td>
+              <td style="color:var(--red)">-1.9%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=CIFR" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">CIFR ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">Cipher Mining</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>34/100</td>
+              <td>$20.04</td>
+              <td>❌</td>
+              <td>40.5</td>
+              <td style="color:var(--green)">+3.5%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=HUT" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">HUT ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">Hut 8 Corp</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>34/100</td>
+              <td>$97.14</td>
+              <td>❌</td>
+              <td>36.7</td>
+              <td style="color:var(--green)">+29.7%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=NBIS" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">NBIS ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">Nebius Group</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>29/100</td>
+              <td>$215.62</td>
+              <td>❌</td>
+              <td>49.4</td>
+              <td style="color:var(--green)">+29.3%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=BBAI" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">BBAI ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">BigBear.ai</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>29/100</td>
+              <td>$3.53</td>
+              <td>❌</td>
+              <td>24.0</td>
+              <td style="color:var(--green)">+5.4%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=SERV" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">SERV ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">Serve Robotics</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>29/100</td>
+              <td>$6.31</td>
+              <td>❌</td>
+              <td>40.8</td>
+              <td style="color:var(--red)">-25.7%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=APLD" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">APLD ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">Applied Digital</td>
+              <td style="color:var(--red);font-weight:600">AVOID</td>
+              <td>25/100</td>
+              <td>$33.06</td>
+              <td>❌</td>
+              <td>28.0</td>
+              <td style="color:var(--green)">+9.9%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=IREN" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">IREN ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">Iris Energy</td>
+              <td style="color:var(--red);font-weight:600">AVOID</td>
+              <td>25/100</td>
+              <td>$38.82</td>
+              <td>❌</td>
+              <td>26.7</td>
+              <td style="color:var(--red)">-18.6%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=GBTC" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">GBTC ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">Grayscale Bitcoin Trust</td>
+              <td style="color:var(--red);font-weight:600">AVOID</td>
+              <td>23/100</td>
+              <td>$46.50</td>
+              <td>❌</td>
+              <td>49.1</td>
+              <td style="color:var(--red)">-19.6%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=BTBT" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">BTBT ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">Bit Digital</td>
+              <td style="color:var(--red);font-weight:600">AVOID</td>
+              <td>22/100</td>
+              <td>$1.65</td>
+              <td>❌</td>
+              <td>45.5</td>
+              <td style="color:var(--green)">+4.4%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=PATH" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">PATH ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">UiPath</td>
+              <td style="color:var(--red);font-weight:600">AVOID</td>
+              <td>14/100</td>
+              <td>$11.71</td>
+              <td>❌</td>
+              <td>63.9</td>
+              <td style="color:var(--green)">+12.5%</td>
+            </tr></tbody>
+          </table>
+          </div>
+        </div>
+        <div class="ai-theme">
+          <h3>Energy & Power</h3>
+          <div class="table-wrap">
+          <table class="pos-table">
+            <thead><tr>
+              <th>Ticker</th><th>Company</th><th>Signal</th><th>Score</th>
+              <th>Price</th><th>MA50+200</th><th>RSI</th><th>3M Perf</th>
+            </tr></thead>
+            <tbody>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=AES" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">AES ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">AES Corporation</td>
+              <td style="color:var(--yellow);font-weight:600">WATCH</td>
+              <td>66/100</td>
+              <td>$14.58</td>
+              <td>✅</td>
+              <td>37.8</td>
+              <td style="color:var(--green)">+2.0%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=EMR" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">EMR ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Emerson Electric Co.</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>35/100</td>
+              <td>$139.05</td>
+              <td>❌</td>
+              <td>44.7</td>
+              <td style="color:var(--green)">+5.6%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=NNE" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">NNE ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">Nano Nuclear Energy</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>33/100</td>
+              <td>$20.03</td>
+              <td>❌</td>
+              <td>36.1</td>
+              <td style="color:var(--red)">-18.4%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=NEE" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">NEE ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">NextEra Energy, Inc.</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>30/100</td>
+              <td>$88.34</td>
+              <td>❌</td>
+              <td>66.8</td>
+              <td style="color:var(--red)">-5.2%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=GEV" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">GEV ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">GE Vernova Inc.</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>29/100</td>
+              <td>$1,113.11</td>
+              <td>✅</td>
+              <td>67.3</td>
+              <td style="color:var(--green)">+23.9%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=PWR" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">PWR ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">Quanta Services</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>29/100</td>
+              <td>$668.31</td>
+              <td>❌</td>
+              <td>45.5</td>
+              <td style="color:var(--green)">+13.8%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=OKLO" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">OKLO ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">Oklo Inc</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>28/100</td>
+              <td>$52.36</td>
+              <td>❌</td>
+              <td>42.0</td>
+              <td style="color:var(--red)">-21.6%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=CEG" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">CEG ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Constellation Energy Corporation</td>
+              <td style="color:var(--red);font-weight:600">AVOID</td>
+              <td>27/100</td>
+              <td>$239.25</td>
+              <td>❌</td>
+              <td>44.9</td>
+              <td style="color:var(--red)">-12.3%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=SMR" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">SMR ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">NuScale Power</td>
+              <td style="color:var(--red);font-weight:600">AVOID</td>
+              <td>17/100</td>
+              <td>$9.76</td>
+              <td>❌</td>
+              <td>48.0</td>
+              <td style="color:var(--red)">-22.8%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=GE" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">GE ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">GE Aerospace</td>
+              <td style="color:var(--red);font-weight:600">AVOID</td>
+              <td>17/100</td>
+              <td>$377.52</td>
+              <td>✅</td>
+              <td>91.0</td>
+              <td style="color:var(--green)">+34.3%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=AMRC" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">AMRC ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">Ameresco</td>
+              <td style="color:var(--red);font-weight:600">AVOID</td>
+              <td>17/100</td>
+              <td>$25.40</td>
+              <td>❌</td>
+              <td>42.2</td>
+              <td style="color:var(--green)">+1.6%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=ETN" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">ETN ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Eaton Corporation, plc Ordinary </td>
+              <td style="color:var(--red);font-weight:600">AVOID</td>
+              <td>12/100</td>
+              <td>$398.52</td>
+              <td>❌</td>
+              <td>51.5</td>
+              <td style="color:var(--green)">+10.4%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=VST" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">VST ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Vistra Corp.</td>
+              <td style="color:var(--red);font-weight:600">AVOID</td>
+              <td>10/100</td>
+              <td>$151.05</td>
+              <td>❌</td>
+              <td>54.9</td>
+              <td style="color:var(--red)">-0.1%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=NRG" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">NRG ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">NRG Energy, Inc.</td>
+              <td style="color:var(--red);font-weight:600">AVOID</td>
+              <td>—</td>
+              <td>$136.70</td>
+              <td>❌</td>
+              <td>65.9</td>
+              <td style="color:var(--red)">-10.5%</td>
+            </tr></tbody>
+          </table>
+          </div>
+        </div>
+        <div class="ai-theme">
+          <h3>Optics, Fiber & Networking</h3>
+          <div class="table-wrap">
+          <table class="pos-table">
+            <thead><tr>
+              <th>Ticker</th><th>Company</th><th>Signal</th><th>Score</th>
+              <th>Price</th><th>MA50+200</th><th>RSI</th><th>3M Perf</th>
+            </tr></thead>
+            <tbody>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=LITE" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">LITE ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">Lumentum</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>34/100</td>
+              <td>$728.32</td>
+              <td>❌</td>
+              <td>42.2</td>
+              <td style="color:var(--red)">-18.3%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=AAOI" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">AAOI ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">Applied Optoelectronics</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>34/100</td>
+              <td>$120.95</td>
+              <td>❌</td>
+              <td>35.7</td>
+              <td style="color:var(--red)">-17.4%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=ANET" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">ANET ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Arista Networks</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>34/100</td>
+              <td>$159.99</td>
+              <td>✅</td>
+              <td>52.5</td>
+              <td style="color:var(--green)">+26.3%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=COHR" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">COHR ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">Coherent Corp</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>29/100</td>
+              <td>$333.36</td>
+              <td>❌</td>
+              <td>46.4</td>
+              <td style="color:var(--red)">-3.4%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=VIAV" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">VIAV ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">Viavi Solutions</td>
+              <td style="color:var(--red);font-weight:600">AVOID</td>
+              <td>24/100</td>
+              <td>$47.07</td>
+              <td>❌</td>
+              <td>47.3</td>
+              <td style="color:var(--green)">+14.4%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=CIEN" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">CIEN ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">Ciena Corp</td>
+              <td style="color:var(--red);font-weight:600">AVOID</td>
+              <td>19/100</td>
+              <td>$422.46</td>
+              <td>❌</td>
+              <td>40.8</td>
+              <td style="color:var(--red)">-14.7%</td>
+            </tr></tbody>
+          </table>
+          </div>
+        </div>
+        <div class="ai-theme">
+          <h3>Cooling, Hardware & Infrastructure</h3>
+          <div class="table-wrap">
+          <table class="pos-table">
+            <thead><tr>
+              <th>Ticker</th><th>Company</th><th>Signal</th><th>Score</th>
+              <th>Price</th><th>MA50+200</th><th>RSI</th><th>3M Perf</th>
+            </tr></thead>
+            <tbody>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=HPE" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">HPE ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Hewlett Packard Enterprise Compa</td>
+              <td style="color:var(--yellow);font-weight:600">WATCH</td>
+              <td>55/100</td>
+              <td>$41.23</td>
+              <td>✅</td>
+              <td>32.4</td>
+              <td style="color:var(--green)">+67.5%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=WDC" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">WDC ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Western Digital Corp.</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>38/100</td>
+              <td>$539.00</td>
+              <td>✅</td>
+              <td>50.8</td>
+              <td style="color:var(--green)">+82.7%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=STX" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">STX ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Seagate Technology Holdings PLC </td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>34/100</td>
+              <td>$820.16</td>
+              <td>❌</td>
+              <td>46.6</td>
+              <td style="color:var(--green)">+91.0%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=CARR" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">CARR ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Carrier Global Corporation</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>34/100</td>
+              <td>$70.07</td>
+              <td>✅</td>
+              <td>50.9</td>
+              <td style="color:var(--green)">+25.8%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=HUBB" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">HUBB ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">Hubbell</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>34/100</td>
+              <td>$487.10</td>
+              <td>✅</td>
+              <td>50.2</td>
+              <td style="color:var(--red)">-9.1%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=GNRC" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">GNRC ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">Generac</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>33/100</td>
+              <td>$252.66</td>
+              <td>❌</td>
+              <td>44.8</td>
+              <td style="color:var(--green)">+19.3%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=DELL" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">DELL ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">Dell Technologies</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>32/100</td>
+              <td>$394.32</td>
+              <td>✅</td>
+              <td>53.4</td>
+              <td style="color:var(--green)">+100.6%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=JCI" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">JCI ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Johnson Controls International p</td>
+              <td style="color:var(--red);font-weight:600">AVOID</td>
+              <td>26/100</td>
+              <td>$140.76</td>
+              <td>❌</td>
+              <td>46.0</td>
+              <td style="color:var(--green)">+5.9%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=TT" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">TT ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">Trane Technologies</td>
+              <td style="color:var(--red);font-weight:600">AVOID</td>
+              <td>25/100</td>
+              <td>$478.13</td>
+              <td>✅</td>
+              <td>55.9</td>
+              <td style="color:var(--green)">+3.9%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=VRT" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">VRT ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">Vertiv</td>
+              <td style="color:var(--red);font-weight:600">AVOID</td>
+              <td>7/100</td>
+              <td>$300.53</td>
+              <td>❌</td>
+              <td>52.4</td>
+              <td style="color:var(--green)">+2.2%</td>
+            </tr></tbody>
+          </table>
+          </div>
+        </div>
+        <div class="ai-theme">
+          <h3>AI Software & Models</h3>
+          <div class="table-wrap">
+          <table class="pos-table">
+            <thead><tr>
+              <th>Ticker</th><th>Company</th><th>Signal</th><th>Score</th>
+              <th>Price</th><th>MA50+200</th><th>RSI</th><th>3M Perf</th>
+            </tr></thead>
+            <tbody>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=CDNS" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">CDNS ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Cadence Design Systems</td>
+              <td style="color:var(--yellow);font-weight:600">WATCH</td>
+              <td>49/100</td>
+              <td>$373.14</td>
+              <td>✅</td>
+              <td>42.1</td>
+              <td style="color:var(--green)">+33.9%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=GOOGL" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">GOOGL ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Alphabet Inc. Class A Common Sto</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>40/100</td>
+              <td>$359.91</td>
+              <td>❌</td>
+              <td>51.3</td>
+              <td style="color:var(--green)">+21.7%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=AMZN" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">AMZN ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Amazon.Com Inc</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>32/100</td>
+              <td>$242.67</td>
+              <td>❌</td>
+              <td>50.9</td>
+              <td style="color:var(--green)">+15.7%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=ACN" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">ACN ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Accenture PLC</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>32/100</td>
+              <td>$137.35</td>
+              <td>❌</td>
+              <td>30.4</td>
+              <td style="color:var(--red)">-31.8%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=EPAM" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">EPAM ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">EPAM Systems</td>
+              <td style="color:var(--muted);font-weight:600">HOLD</td>
+              <td>29/100</td>
+              <td>$88.27</td>
+              <td>❌</td>
+              <td>39.1</td>
+              <td style="color:var(--red)">-31.3%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=SNPS" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">SNPS ↗</a> 🌟</td>
+              <td style="color:var(--muted);font-size:12px">Synopsys Inc</td>
+              <td style="color:var(--red);font-weight:600">AVOID</td>
+              <td>27/100</td>
+              <td>$437.16</td>
+              <td>❌</td>
+              <td>39.0</td>
+              <td style="color:var(--green)">+10.3%</td>
+            </tr>
+            <tr>
+              <td><a href="https://www.tradingview.com/chart/?symbol=ANSS" target="_blank" style="color:var(--blue);font-weight:700;text-decoration:none">ANSS ↗</a> </td>
+              <td style="color:var(--muted);font-size:12px">ANSS</td>
+              <td style="color:var(--muted);font-weight:600">—</td>
+              <td>—</td>
+              <td>—</td>
+              <td>—</td>
+              <td>—</td>
+              <td style="color:var(--muted)">—</td>
+            </tr></tbody>
+          </table>
+          </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+  Daily Stock Advisor &nbsp;·&nbsp; Generated 2026-07-03 &nbsp;·&nbsp;
+  ⚠️ Algorithmic analysis only — NOT financial advice. Do your own due diligence.
+</footer>
+
+</body>
+</html>
